@@ -9,6 +9,30 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+    <style>
+      .ui-field-contain .ui-controlgroup-controls {
+        width: 77%;
+      }
+      .ui-buttongroup .ui-btn {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .ui-content .selectbox {
+        margin-top: -15px;
+        padding-bottom: 0.2em;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      .selectbox {
+        margin: 0 -15px;
+      }
+      .selectbox .ui-field-contain {
+        margin: 0.2em 0;
+      }
+      .itemlist {
+        margin-top: 0 !important;
+      }
+    </style>
 </head>
 <body>
 
@@ -19,28 +43,34 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  <p> 
-	    <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">lpg</a> 
-	    <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">dm</a> 
-	  </p> 
-	  <p>
-	    <a href="#" data-role="button" data-mini="true" data-inline="true">bauhaus (12)</a> 
-	    <a href="#" data-role="button" data-mini="true" data-inline="true">Bäcker (3)</a> 
-	  </p>
-	  <p> sort
-	    <form>
-	      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-		  <input type="radio" data-theme="a" name="radio-choice-t-6" id="radio-choice-t-6a" value="on" checked="checked">
-		  <label for="radio-choice-t-6a">newest</label>
-		  <input type="radio" data-theme="a" name="radio-choice-t-6" id="radio-choice-t-6b" value="off">
-		  <label for="radio-choice-t-6b">time</label>
-		  <input type="radio" data-theme="a" name="radio-choice-t-6" id="radio-choice-t-6c" value="other">
-		  <label for="radio-choice-t-6c">distance</label>
-	      </fieldset>
-	    </form>
-	  </p>
-	  
-	  <ul data-role="listview" data-split-icon="delete">
+      <div class="ui-body-b selectbox">
+          <div data-role="fieldcontain">
+            <fieldset class="ui-buttongroup">
+              <div class="ui-controlgroup-label"><legend>Tags:</legend></div>
+                <div class="ui-controlgroup-controls">
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">lpg</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">dm</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">bauhaus (12)</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">Bäcker (3)</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">more...</a>
+              </div>
+            </fieldset> 
+          </div>
+          <form>
+          <div data-role="fieldcontain">
+            <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+              <legend>Sort by:</legend>
+                  <input type="radio" name="sort" id="sort-newest" value="newest" checked="checked" data-theme="c">
+                  <label for="sort-newest">newest</label>
+                  <input type="radio" name="sort" id="sort-time" value="time" data-theme="c">
+                  <label for="sort-time">time</label>
+                  <input type="radio" name="sort" id="sort-distance" value="distance" data-theme="c">
+                  <label for="sort-distance">distance</label>
+            </fieldset>
+          </div>
+          </form>
+      </div>
+	  <ul data-role="listview" data-split-icon="delete" class="itemlist">
 	    <li><a href="#">Brot</a> <a href="#"> delete </a> </li>
 	    <li><a href="#">Mozze</a><a href="#"> delete </a></li>
 	    <li><a href="#">Rauke</a><a href="#"> delete </a></li>
