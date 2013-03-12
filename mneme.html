@@ -135,8 +135,59 @@
 
       <!-- edit content -->
       <div data-role="content">
-        <p>Hier wird gearbeitet.</p>
+        <h3>Tags</h3>
+        <div data-role="fieldcontain">
+          <fieldset class="buttongroup">
+            <div class="ui-controlgroup-label"><legend>Selected tags:</legend></div>
+            <div class="ui-controlgroup-controls">
+              <div>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">LPG</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">DM</a>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div data-role="fieldcontain">
+          <fieldset class="buttongroup">
+            <div class="ui-controlgroup-label"><legend>Most used tags:</legend></div>
+            <div class="ui-controlgroup-controls">
+              <div>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">bauhaus (12)</a>
+                <a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">Bäcker (3)</a>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div data-role="fieldcontain">
+          <fieldset class="buttongroup">
+            <div class="ui-controlgroup-label"><legend>New tag:</legend></div>
+            <div class="ui-controlgroup-controls">
+              <ul data-role="listview" data-inset="true" data-icon="false" data-filter="true" data-filter-reveal="true" data-filter-placeholder="add tag...">
+                <li><a href="#">Bauhaus</a></li>
+                <li><a href="#">Bäcker</a></li>
+                <li><a href="#">Mustafa</a></li>
+              </ul>
+            </div>
+          </fieldset>
+        </div>
+
+        <h3>Description</h3>
+        <form>
+          <textarea cols="40" rows="8" name="edit-description" id="edit-description" placeholder="Enter description here (optional)"></textarea>
+        </form>
+
+        <h3>TODO!</h3>
       </div><!-- / edit content -->
+
+      <!-- show footer -->
+      <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#home" data-icon="home">Back</a></li>
+            <li><a href="#save" data-icon="check">Save</a></li>
+          </ul>
+        </div>
+      </div><!-- / show footer -->
     </div><!-- / edit page -->
 
     <!-- show page -->
