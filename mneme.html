@@ -6,14 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 	
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
-	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+	<link rel="stylesheet" href="javascript/jquery/jquery.mobile-1.3.0.min.css" />
+	<script src="javascript/jquery/jquery-1.9.1.min.js"></script>
+	<script src="javascript/jquery/jquery.mobile-1.3.0.min.js"></script>
     <style>
       .ui-field-contain .ui-controlgroup-controls {
         width: 77%;
       }
-      .ui-buttongroup .ui-btn {
+      .buttongroup .ui-btn {
         margin-left: 0;
         margin-right: 0;
       }
@@ -32,6 +32,11 @@
       .itemlist {
         margin-top: 0 !important;
       }
+      .map, .pic{
+        width: 100%;
+        height: 400px;
+        background-color: #888888;
+      }
     </style>
 </head>
 <body>
@@ -45,7 +50,7 @@
 	<div data-role="content">
       <div class="ui-body-b selectbox">
           <div data-role="fieldcontain">
-            <fieldset class="ui-buttongroup">
+            <fieldset class="buttongroup">
               <div class="ui-controlgroup-label"><legend>Tags:</legend></div>
                 <div class="ui-controlgroup-controls">
                 <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="delete" data-iconpos="right" data-theme="b">lpg</a>
@@ -62,8 +67,8 @@
               <legend>Sort by:</legend>
                   <input type="radio" name="sort" id="sort-newest" value="newest" checked="checked" data-theme="c">
                   <label for="sort-newest">newest</label>
-                  <input type="radio" name="sort" id="sort-time" value="time" data-theme="c">
-                  <label for="sort-time">time</label>
+                  <input type="radio" name="sort" id="sort-deadline" value="deadline" data-theme="c">
+                  <label for="sort-deadline">deadline</label>
                   <input type="radio" name="sort" id="sort-distance" value="distance" data-theme="c">
                   <label for="sort-distance">distance</label>
             </fieldset>
@@ -71,7 +76,7 @@
           </form>
       </div>
 	  <ul data-role="listview" data-split-icon="delete" class="itemlist">
-	    <li><a href="#">Brot</a> <a href="#"> delete </a> </li>
+	    <li><a href="#show">Brot</a> <a href="#"> delete </a> </li>
 	    <li><a href="#">Mozze</a><a href="#"> delete </a></li>
 	    <li><a href="#">Rauke</a><a href="#"> delete </a></li>
 	    <li><a href="#">Kaffe</a><a href="#"> delete </a></li>
@@ -112,6 +117,40 @@
 		<p>Hier wird gearbeitet.</p>
 	</div><!-- /content -->
 
+</div><!-- /page -->
+
+<div data-role="page" id="show">
+  <div data-role="header">
+    <h1>Brot</h1>
+  </div><!-- /header -->
+
+  <div data-role="content">
+    <h3>Tags</h3>
+    <p class="buttongroup">
+      <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">LPG</button>
+      <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">DM</button>
+      <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">Bäckerei</button>
+    </p>
+
+    <h3>Deadline</h3>
+    <p>14. April 2013, 18:30</p>
+
+    <h3>Place</h3>
+    <div id="showmap" class="map"></div>
+
+    <h3>Picture</h3>
+    <div id="showpic" class="pic"></div>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#home" data-icon="home">Back</a></li>
+        <li><a href="#edit" data-icon="plus">Edit</a></li>
+        <li><a href="#delete" data-icon="delete">Delete</a></li>
+      </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
 </div><!-- /page -->
 
 </body>
