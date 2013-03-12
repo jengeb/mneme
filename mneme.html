@@ -42,6 +42,9 @@
         height: 400px;
         background-color: #888888;
       }
+      .button-disabled .ui-disabled {
+        opacity: 0.75;
+      }
     </style>
   </head>
 
@@ -146,10 +149,10 @@
       <!-- show content -->
       <div data-role="content">
         <h3>Tags</h3>
-        <p class="buttongroup">
-          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">LPG</button>
-          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">DM</button>
-          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c">Bäckerei</button>
+        <p class="buttongroup button-disabled">
+          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c" disabled="">LPG</button>
+          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c" disabled="">DM</button>
+          <button data-mini="true" data-inline="true" data-disabled="true" data-theme="c" disabled="">Bäckerei</button>
         </p>
 
         <h3>Description</h3>
