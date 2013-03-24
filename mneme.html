@@ -37,7 +37,7 @@
       .itemlist {
         margin-top: 0 !important;
       }
-      .map, .pic{
+      .map, .picture{
         width: 100%;
         height: 400px;
         background-color: #888888;
@@ -176,7 +176,51 @@
           <textarea cols="40" rows="8" name="edit-description" id="edit-description" placeholder="Enter description here (optional)"></textarea>
         </form>
 
-        <h3>TODO!</h3>
+        <form>
+	  <label>
+	    <input type="checkbox" id="deadline" name="deadline">Deadline
+	  </label>
+	</form>
+	<div id="editdatetime">
+	  <label for="date">Date:</label>
+	  <input type="date" name="date" id="date" value="24.03.2013">
+	  
+	  <label for="time">Time:</label>
+	  <input type="text" name="time" id="time" value="18:05">
+	</div>
+	<script>
+	  $('#editdatetime').hide()
+	  $('#deadline').change(function() {
+	    $('#editdatetime').toggle(500);
+	  })
+	</script>
+	
+	<form>
+	  <label>
+	    <input type="checkbox" id="place" name="place">Place
+	  </label>
+	</form>
+	<div id="editmap" class="map"></div>
+	<script>
+	  $('#editmap').hide()
+	  $('#place').change(function() {
+	    $('#editmap').toggle(500);
+	  })
+	</script>
+	
+	<form>
+	  <label>
+	    <input type="checkbox" id="picture" name="picture">Picture
+	  </label>
+	</form>
+	<div id="editpicture" class="picture"></div>
+	<script>
+	  $('#editpicture').hide()
+	  $('#picture').change(function() {
+	    $('#editpicture').toggle(500);
+	  })
+	</script>
+	
       </div><!-- / edit content -->
 
       <!-- show footer -->
@@ -216,7 +260,7 @@
         <div id="showmap" class="map"></div>
 
         <h3>Picture</h3>
-        <div id="showpic" class="pic"></div>
+        <div id="showpic" class="picture"></div>
       </div><!-- / show content -->
 
       <!-- show footer -->
