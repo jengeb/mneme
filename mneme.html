@@ -128,15 +128,15 @@
         </div>
       </div><!-- / home footer -->
       <div data-role="popup" id="about">
-	<div data-role="header">
-	  <h1>About</h1>
-	</div>
-	<div data-role="content">
-	  <p>
-	    mneme is free software to handle stuff.
-	    The source code is available at <a href="https://github.com/fitefoe/mneme">github</a>.
-	  </p>
-	</div>
+        <div data-role="header">
+          <h1>About</h1>
+        </div>
+        <div data-role="content">
+          <p>
+          mneme is free software to handle stuff.
+          The source code is available at <a href="https://github.com/fitefoe/mneme">github</a>.
+          </p>
+        </div>
       </div>
     </div><!-- / home page -->
 
@@ -191,49 +191,49 @@
         </form>
 
         <form>
-	  <label>
-	    <input type="checkbox" id="deadline" name="deadline">Deadline
-	  </label>
-	</form>
-	<div id="editdatetime">
-	  <label for="date">Date:</label>
-	  <input type="date" name="date" id="date" value="24.03.2013">
-	  
-	  <label for="time">Time:</label>
-	  <input type="text" name="time" id="time" value="18:05">
-	</div>
-	<script>
-	  $('#editdatetime').hide()
-	  $('#deadline').change(function() {
-	    $('#editdatetime').toggle(500);
-	  })
-	</script>
-	
-	<form>
-	  <label>
-	    <input type="checkbox" id="place" name="place">Place
-	  </label>
-	</form>
-	<div id="editmap" class="map"></div>
-	<script>
-	  $('#editmap').hide()
-	  $('#place').change(function() {
-	    $('#editmap').toggle(500);
-	  })
-	</script>
-	
-	<form>
-	  <label>
-	    <input type="checkbox" id="picture" name="picture">Picture
-	  </label>
-	</form>
-	<div id="editpicture" class="picture"></div>
-	<script>
-	  $('#editpicture').hide()
-	  $('#picture').change(function() {
-	    $('#editpicture').toggle(500);
-	  })
-	</script>
+          <label>
+            <input type="checkbox" id="deadline" name="deadline">Deadline
+          </label>
+        </form>
+        <div id="editdatetime">
+          <label for="date">Date:</label>
+          <input type="date" name="date" id="date" value="24.03.2013">
+
+          <label for="time">Time:</label>
+          <input type="text" name="time" id="time" value="18:05">
+        </div>
+        <script>
+          $('#editdatetime').hide()
+          $('#deadline').change(function() {
+            $('#editdatetime').toggle(500);
+          })
+        </script>
+
+        <form>
+          <label>
+            <input type="checkbox" id="place" name="place">Place
+          </label>
+        </form>
+        <div id="editmap" class="map"></div>
+        <script>
+          $('#editmap').hide()
+          $('#place').change(function() {
+            $('#editmap').toggle(500);
+          })
+        </script>
+
+        <form>
+          <label>
+            <input type="checkbox" id="picture" name="picture">Picture
+          </label>
+        </form>
+        <div id="editpicture" class="picture"></div>
+        <script>
+          $('#editpicture').hide()
+          $('#picture').change(function() {
+            $('#editpicture').toggle(500);
+          })
+        </script>
 	
       </div><!-- / edit content -->
 
