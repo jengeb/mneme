@@ -25,6 +25,18 @@ Mneme = function (dbname) {
 
   var mneme = {};
 
+  mneme.powerset = function(list) {
+    var pow = [[]];
+    for (var i=0; i<list.length; i++) {
+      var cur = list[i];
+      var subpow = mneme.powerset (list.slice(i+1));
+      for (var j=0; j<subpow.length; j++) {
+        pow.push( [cur].concat(subpow[j]).sort() );
+      }
+    }
+    return pow;
+  }
+
   mneme.create_doc = function (doc, callback) {
     var datestr = new Date().toISOString();
     doc['createtime'] = datestr;
@@ -33,12 +45,40 @@ Mneme = function (dbname) {
   }
 
   mneme.update_doc = function (doc, callback) {
+    var datestr = new Date().toISOString();
+    doc['updatetime'] = datestr;
     return db.put(doc, callback);
   }
 
   mneme.get_doc = function (docid, callback) {
     return db.get(docid, callback);
   }
-  
+
+  var view_tags = {
+    map: function (doc) {
+      if (doc.tags) {
+        var tags_powerset = mneme.powerset(doc.tags);
+        for (var i=1; i<tags_powerset.length; i++) {
+          emit(tags_powerset[i], null);
+        }
+      }
+    },
+    reduce: function (keys, values, rereduce) {
+      if (rereduce) {
+        return sum(values);
+      } else {
+        return values.length;
+      }
+    }
+  };
+
+  mneme.get_tags = function (callback) {
+    return db.query(view_tags, function(err, response) {
+      if (!err) {
+        console.log(response);
+      }
+    });
+  }
+
   return mneme;
 }
