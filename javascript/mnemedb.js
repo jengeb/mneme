@@ -74,9 +74,13 @@ Mneme = function (dbname) {
 
   mneme.get_tags = function (callback) {
     return db.query(view_tags, function(err, response) {
-      if (!err) {
-        console.log(response);
-      }
+      callback(err, !err ? response.rows : null);
+    });
+  }
+
+  mneme.get_tag_count = function (tag, callback) {
+    return db.query(view_tags, {key: tag.sort()}, function(err, response) {
+      callback(err, (!err && response.rows.length) ? response.rows[0].value : 0);
     });
   }
 
