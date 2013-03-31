@@ -25,7 +25,7 @@ Mneme = function (dbname) {
 
   var mneme = {};
 
-  mneme.powerset = function(list) {
+  mneme.powerset = function (list) {
     var pow = [[]];
     for (var i=0; i<list.length; i++) {
       var cur = list[i];
@@ -35,6 +35,25 @@ Mneme = function (dbname) {
       }
     }
     return pow;
+  }
+
+  // compute set difference x \ y (assumes that x and y are sorted and that
+  // the elements are unique)
+  // example: x = [ 'a', 'b', 'c', 'd' ]
+  //          y = [ 'b', 'd' ]
+  //          tags_diff(x, y) == [ 'a', 'c' ]
+  mneme.tags_diff = function (x, y) {
+    var diff = [];
+    var ypos = 0;
+    for (var xpos=0; xpos<x.length; xpos++) {
+      while (ypos<y.length && y[ypos]<x[xpos]) {
+        ypos++;
+      }
+      if (ypos==y.length || x[xpos] != y[ypos]) {
+        diff.push(x[xpos]);
+      }
+    }
+    return diff;
   }
 
   mneme.create_doc = function (doc, callback) {
@@ -57,17 +76,60 @@ Mneme = function (dbname) {
   var view_tags = {
     map: function (doc) {
       if (doc.tags) {
-        var tags_powerset = mneme.powerset(doc.tags);
+        var tags_sorted = doc.tags.sort();
+        var tags_powerset = mneme.powerset(tags_sorted);
         for (var i=1; i<tags_powerset.length; i++) {
-          emit(tags_powerset[i], null);
+          var tags_remaining = mneme.tags_diff(tags_sorted, tags_powerset[i]);
+          emit(tags_powerset[i],
+            {
+              id: doc._id,
+              name: doc.name,
+              createtime: doc.createtime,
+              updatetime: doc.updatetime,
+              description: doc.description,
+              deadline: doc.deadline,
+              place: doc.place,
+              tags_remaining: tags_remaining
+            }
+          );
         }
       }
     },
     reduce: function (keys, values, rereduce) {
       if (rereduce) {
-        return sum(values);
+        var a = values[0], b = values[1];
+
+        var docs = a.docs.concat(b.docs);
+        var tags_remaining = a.tags_remaining;
+
+        var btags = Object.keys(b.tags_remaining);
+        for (var i=0; i<btags.length; i++) {
+          var tag = btags[i];
+          if (tags_remaining[tag]) {
+            tags_remaining[tag] += b.tags_remaining[tag];
+          } else {
+            tags_remaining[tag] = b.tags_remaining[tag];
+          }
+        }
       } else {
-        return values.length;
+        var docs = values;
+        var tags_remaining = { };
+
+        // count remaining tags
+        for (var i=0; i<values.length; i++) {
+          for (var j=0; j<values[i].tags_remaining.length; j++) {
+            var tag = values[i].tags_remaining[j];
+            if (tags_remaining[tag]) {
+              tags_remaining[tag]++;
+            } else {
+              tags_remaining[tag] = 1;
+            }
+          }
+        }
+      }
+      return {
+        tags_remaining: tags_remaining,
+        docs: docs
       }
     }
   };
