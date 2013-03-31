@@ -1,11 +1,12 @@
 /*
 JSON format for mneme document  
-mandatory keys: name, createtime, updatetime
+mandatory keys: name, createtime, updatetime, enabled
 
 {
   'name': 'brot',
   'createtime': '2013-03-29T11:58:31.343Z',
   'updatetime': '2013-03-29T11:58:31.343Z',
+  'enabled': true,
   'tags': [ 'LPG', 'DM', 'Bäckerei' ],
   'description': 'Das leckere Schwarzbrot und nicht das langweilige Toastbrot!',
   'deadline': '2013-03-29T17:58:31.343Z',
@@ -73,22 +74,17 @@ Mneme = function (dbname) {
     return db.get(docid, callback);
   }
 
-  var view_tags = {
+  var view_tags_subsets = {
     map: function (doc) {
-      if (doc.tags) {
-        var tags_sorted = doc.tags.sort();
+      if (doc.enabled) {
+        var tags = doc.tags || [];
+        var tags_sorted = tags.sort();
         var tags_powerset = mneme.powerset(tags_sorted);
-        for (var i=1; i<tags_powerset.length; i++) {
+        for (var i=0; i<tags_powerset.length; i++) {
           var tags_remaining = mneme.tags_diff(tags_sorted, tags_powerset[i]);
           emit(tags_powerset[i],
             {
               id: doc._id,
-              name: doc.name,
-              createtime: doc.createtime,
-              updatetime: doc.updatetime,
-              description: doc.description,
-              deadline: doc.deadline,
-              place: doc.place,
               tags_remaining: tags_remaining
             }
           );
@@ -99,7 +95,7 @@ Mneme = function (dbname) {
       if (rereduce) {
         var a = values[0], b = values[1];
 
-        var docs = a.docs.concat(b.docs);
+        var docids = a.docids.concat(b.docids);
         var tags_remaining = a.tags_remaining;
 
         var btags = Object.keys(b.tags_remaining);
@@ -112,11 +108,12 @@ Mneme = function (dbname) {
           }
         }
       } else {
-        var docs = values;
+        var docids = [];
         var tags_remaining = { };
 
         // count remaining tags
         for (var i=0; i<values.length; i++) {
+          docids.push(values[i].id);
           for (var j=0; j<values[i].tags_remaining.length; j++) {
             var tag = values[i].tags_remaining[j];
             if (tags_remaining[tag]) {
@@ -128,21 +125,73 @@ Mneme = function (dbname) {
         }
       }
       return {
-        tags_remaining: tags_remaining,
-        docs: docs
+        docids: docids,
+        tags_remaining: tags_remaining
       }
     }
   };
 
-  mneme.get_tags = function (callback) {
-    return db.query(view_tags, function(err, response) {
+  mneme.get_tags_subsets = function (callback) {
+    return db.query(view_tags_subsets, function(err, response) {
       callback(err, !err ? response.rows : null);
     });
   }
 
-  mneme.get_tag_count = function (tag, callback) {
-    return db.query(view_tags, {key: tag.sort()}, function(err, response) {
-      callback(err, (!err && response.rows.length) ? response.rows[0].value : 0);
+  mneme.get_tags_subset_count = function (tags, callback) {
+    return db.query(view_tags_subsets, {key: tags.sort()}, function(err, response) {
+      callback(err, (!err && response.rows.length) ? response.rows[0].value.docids.length : 0);
+    });
+  }
+
+  var view_tags_enabled = {
+    map: function (doc) {
+      if (doc.enabled && doc.tags) {
+        for (var i=0; i<doc.tags.length; i++) {
+          emit(doc.tags[i], null);
+        }
+      }
+    },
+    reduce: function (keys, values, rereduce) {
+      if (rereduce) {
+        return sum(values);
+      } else {
+        return values.length;
+      }
+    }
+  };
+
+  mneme.get_tags_enabled = function (callback) {
+    return db.query(view_tags_enabled, function(err, response) {
+      callback(err, !err ? response.rows : null);
+    });
+  }
+
+  var view_tags_all = {
+    map: function (doc) {
+      if (doc.tags) {
+        for (var i=0; i<doc.tags.length; i++) {
+          emit(doc.tags[i], null);
+        }
+      }
+    },
+    reduce: function (keys, values, rereduce) {
+      if (rereduce) {
+        return sum(values);
+      } else {
+        return values.length;
+      }
+    }
+  };
+
+  mneme.get_tags_all = function (callback) {
+    return db.query(view_tags_all, function(err, response) {
+      callback(err, !err ? response.rows : null);
+    });
+  }
+
+  mneme.get_docs = function (keys, callback) {
+    return db.allDocs({keys: keys, include_docs: true}, function (err, response) {
+      callback(err, response.rows);
     });
   }
 
