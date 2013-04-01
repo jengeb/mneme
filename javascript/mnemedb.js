@@ -80,6 +80,7 @@ Mneme = function (dbname) {
     var datestr = new Date().toISOString();
     doc['createtime'] = datestr;
     doc['updatetime'] = datestr;
+    doc['enabled'] = true;
     return db.post(doc, callback);
   }
 
@@ -91,6 +92,16 @@ Mneme = function (dbname) {
 
   mneme.get_doc = function (docid, callback) {
     return db.get(docid, callback);
+  }
+
+  // enable may be true or false
+  mneme.set_doc_enabled = function (docid, enabled, callback) {
+    return mneme.get_doc(docid, function (err, doc) {
+      if (!err && doc) {
+        doc.enabled = enabled;
+        mneme.update_doc(doc, callback);
+      }
+    });
   }
 
   var view_tags_subsets = {
@@ -151,7 +162,7 @@ Mneme = function (dbname) {
   };
 
   // get information for a tags combination
-  mneme.get_tags_subsets = function (tags, callback) {
+  mneme.get_tags_enabled_info = function (tags, callback) {
     return db.query(view_tags_subsets, {key: tags.sort()}, function(err, response) {
       callback(err,
         (!err && response.rows.length)
