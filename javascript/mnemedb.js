@@ -1,5 +1,5 @@
 /*
-JSON format for mneme document  
+JSON format for mnemedb document  
 mandatory keys: name, createtime, updatetime, enabled
 
 {
@@ -21,16 +21,16 @@ mandatory keys: name, createtime, updatetime, enabled
 }
 */
 
-Mneme = function (dbname) {
+Mnemedb = function (dbname) {
   var db = Pouch(dbname);
 
-  var mneme = {};
+  var mnemedb = {};
 
-  mneme.powerset = function (list) {
+  mnemedb.powerset = function (list) {
     var pow = [[]];
     for (var i=0; i<list.length; i++) {
       var cur = list[i];
-      var subpow = mneme.powerset (list.slice(i+1));
+      var subpow = mnemedb.powerset (list.slice(i+1));
       for (var j=0; j<subpow.length; j++) {
         pow.push( [cur].concat(subpow[j]).sort() );
       }
@@ -43,7 +43,7 @@ Mneme = function (dbname) {
   // example: x = [ 'a', 'b', 'c', 'd' ]
   //          y = [ 'b', 'd' ]
   //          tags_diff(x, y) == [ 'a', 'c' ]
-  mneme.tags_diff = function (x, y) {
+  mnemedb.tags_diff = function (x, y) {
     var diff = [];
     var ypos = 0;
     for (var xpos=0; xpos<x.length; xpos++) {
@@ -60,7 +60,7 @@ Mneme = function (dbname) {
   // sort object by propery value
   // example: obj = { a: 10, b: 4, c: 6 }
   //          sortbyvalue(obj) = [ ['a', 10], ['c', 6], ['b', 4] ]
-  mneme.sortbyvalue = function (obj) {
+  mnemedb.sortbyvalue = function (obj) {
     var sorted = [];
     var keys = Object.keys(obj);
     for (var i=0; i<keys.length; i++) {
@@ -72,11 +72,11 @@ Mneme = function (dbname) {
     return sorted;
   }
 
-  mneme.get_pouchdb = function () {
+  mnemedb.get_pouchdb = function () {
     return db;
   }
 
-  mneme.create_doc = function (doc, callback) {
+  mnemedb.create_doc = function (doc, callback) {
     var datestr = new Date().toISOString();
     doc['createtime'] = datestr;
     doc['updatetime'] = datestr;
@@ -84,22 +84,22 @@ Mneme = function (dbname) {
     return db.post(doc, callback);
   }
 
-  mneme.update_doc = function (doc, callback) {
+  mnemedb.update_doc = function (doc, callback) {
     var datestr = new Date().toISOString();
     doc['updatetime'] = datestr;
     return db.put(doc, callback);
   }
 
-  mneme.get_doc = function (docid, callback) {
+  mnemedb.get_doc = function (docid, callback) {
     return db.get(docid, callback);
   }
 
   // enable may be true or false
-  mneme.set_doc_enabled = function (docid, enabled, callback) {
-    return mneme.get_doc(docid, function (err, doc) {
+  mnemedb.set_doc_enabled = function (docid, enabled, callback) {
+    return mnemedb.get_doc(docid, function (err, doc) {
       if (!err && doc) {
         doc.enabled = enabled;
-        mneme.update_doc(doc, callback);
+        mnemedb.update_doc(doc, callback);
       }
     });
   }
@@ -109,13 +109,13 @@ Mneme = function (dbname) {
       if (doc.enabled) {
         var tags = doc.tags || [];
         var tags_sorted = tags.sort();
-        var tags_powerset = mneme.powerset(tags_sorted);
+        var tags_powerset = mnemedb.powerset(tags_sorted);
         for (var i=0; i<tags_powerset.length; i++) {
-          var tags_remaining = mneme.tags_diff(tags_sorted, tags_powerset[i]);
+          var tags_avail = mnemedb.tags_diff(tags_sorted, tags_powerset[i]);
           emit(tags_powerset[i],
             {
               id: doc._id,
-              tags_remaining: tags_remaining
+              tags_avail: tags_avail
             }
           );
         }
@@ -126,48 +126,48 @@ Mneme = function (dbname) {
         var a = values[0], b = values[1];
 
         var docids = a.docids.concat(b.docids);
-        var tags_remaining = a.tags_remaining;
+        var tags_avail = a.tags_avail;
 
-        var btags = Object.keys(b.tags_remaining);
+        var btags = Object.keys(b.tags_avail);
         for (var i=0; i<btags.length; i++) {
           var tag = btags[i];
-          if (tags_remaining[tag]) {
-            tags_remaining[tag] += b.tags_remaining[tag];
+          if (tags_avail[tag]) {
+            tags_avail[tag] += b.tags_avail[tag];
           } else {
-            tags_remaining[tag] = b.tags_remaining[tag];
+            tags_avail[tag] = b.tags_avail[tag];
           }
         }
       } else {
         var docids = [];
-        var tags_remaining = { };
+        var tags_avail = { };
 
-        // count remaining tags
+        // count available tags
         for (var i=0; i<values.length; i++) {
           docids.push(values[i].id);
-          for (var j=0; j<values[i].tags_remaining.length; j++) {
-            var tag = values[i].tags_remaining[j];
-            if (tags_remaining[tag]) {
-              tags_remaining[tag]++;
+          for (var j=0; j<values[i].tags_avail.length; j++) {
+            var tag = values[i].tags_avail[j];
+            if (tags_avail[tag]) {
+              tags_avail[tag]++;
             } else {
-              tags_remaining[tag] = 1;
+              tags_avail[tag] = 1;
             }
           }
         }
       }
       return {
         docids: docids,
-        tags_remaining: tags_remaining
+        tags_avail: tags_avail
       }
     }
   };
 
   // get information for a tags combination
-  mneme.get_tags_enabled_info = function (tags, callback) {
+  mnemedb.get_tags_enabled_info = function (tags, callback) {
     return db.query(view_tags_subsets, {key: tags.sort()}, function(err, response) {
       callback(err,
         (!err && response.rows.length)
         ? response.rows[0].value
-        : { docids: [], tags_remaining: {} }
+        : { docids: [], tags_avail: {} }
       );
     });
   }
@@ -189,7 +189,7 @@ Mneme = function (dbname) {
     }
   };
 
-  mneme.get_tags_enabled = function (callback) {
+  mnemedb.get_tags_enabled = function (callback) {
     return db.query(view_tags_enabled, function(err, response) {
       callback(err, !err ? response.rows : null);
     });
@@ -212,17 +212,17 @@ Mneme = function (dbname) {
     }
   };
 
-  mneme.get_tags_all = function (callback) {
+  mnemedb.get_tags_all = function (callback) {
     return db.query(view_tags_all, function(err, response) {
       callback(err, !err ? response.rows : null);
     });
   }
 
-  mneme.get_docs = function (keys, callback) {
+  mnemedb.get_docs = function (keys, callback) {
     return db.allDocs({keys: keys, include_docs: true}, function (err, response) {
       callback(err, response.rows);
     });
   }
 
-  return mneme;
+  return mnemedb;
 }
