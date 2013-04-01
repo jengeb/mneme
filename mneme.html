@@ -29,7 +29,7 @@
         // get document ids and available tags for current tag selection
         mnemedb.get_tags_enabled_info(tags_sel, function(err, response){
           // get and clear the available tags div
-          var tags_avail_div = $('#tags_avail').empty();
+          var tags_avail_div = $('#home #tags_avail').empty();
           // sort available tags by count
           var tags=mnemedb.sortbyvalue(response.tags_avail);
           // inject tags one by one
