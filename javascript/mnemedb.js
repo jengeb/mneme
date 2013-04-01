@@ -72,6 +72,10 @@ Mneme = function (dbname) {
     return sorted;
   }
 
+  mneme.get_pouchdb = function () {
+    return db;
+  }
+
   mneme.create_doc = function (doc, callback) {
     var datestr = new Date().toISOString();
     doc['createtime'] = datestr;
@@ -146,15 +150,14 @@ Mneme = function (dbname) {
     }
   };
 
-  mneme.get_tags_subsets = function (callback) {
-    return db.query(view_tags_subsets, function(err, response) {
-      callback(err, !err ? response.rows : null);
-    });
-  }
-
-  mneme.get_tags_subset_count = function (tags, callback) {
+  // get information for a tags combination
+  mneme.get_tags_subsets = function (tags, callback) {
     return db.query(view_tags_subsets, {key: tags.sort()}, function(err, response) {
-      callback(err, (!err && response.rows.length) ? response.rows[0].value.docids.length : 0);
+      callback(err,
+        (!err && response.rows.length)
+        ? response.rows[0]
+        : { docids: [], tags_remaining: {} }
+      );
     });
   }
 
