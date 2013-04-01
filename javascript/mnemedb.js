@@ -57,6 +57,21 @@ Mneme = function (dbname) {
     return diff;
   }
 
+  // sort object by propery value
+  // example: obj = { a: 10, b: 4, c: 6 }
+  //          sortbyvalue(obj) = [ ['a', 10], ['c', 6], ['b', 4] ]
+  mneme.sortbyvalue = function (obj) {
+    var sorted = [];
+    var keys = Object.keys(obj);
+    for (var i=0; i<keys.length; i++) {
+      sorted.push( [keys[i], obj[keys[i]]] );
+    }
+    sorted.sort( function(a, b) {
+      return b[1]-a[1];
+    });
+    return sorted;
+  }
+
   mneme.create_doc = function (doc, callback) {
     var datestr = new Date().toISOString();
     doc['createtime'] = datestr;
