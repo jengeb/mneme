@@ -166,7 +166,7 @@ Mneme = function (dbname) {
     return db.query(view_tags_subsets, {key: tags.sort()}, function(err, response) {
       callback(err,
         (!err && response.rows.length)
-        ? response.rows[0]
+        ? response.rows[0].value
         : { docids: [], tags_remaining: {} }
       );
     });
