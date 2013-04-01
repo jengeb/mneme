@@ -25,7 +25,7 @@
           for(var i=0; i<tags.length; i++){
             var tag=tags[i]
             $("#tags_available").append(
-            '<a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">'+tag[0]+' ('+tag[1]+')</a>'
+            '<a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c">'+tag[0]+' <span class="button-mini-bubble ui-btn-up-c ui-btn-corner-all">'+tag[1]+'</span></a>'
             ).trigger('create')
           }
         })
@@ -62,6 +62,12 @@
       }
       .button-disabled .ui-disabled {
         opacity: 0.75;
+      }
+      .button-mini-bubble {
+        font-size: 11px;
+        padding: .1em .4em;
+        vertical-align: top;
+        margin-left: .1em;
       }
       #about{
         max-width: 400px;
