@@ -10,7 +10,7 @@ function home_refresh() {
   var tags_sel_div = $('#home #tags_sel');
   var children = tags_sel_div.children();
   for(var i=0; i<children.length; i++){
-    tags_sel.push($(children[i]).data("tag"));    
+    tags_sel.push($(children[i]).data("tag"));
   }
 
   // get document ids and available tags for current tag selection
@@ -30,7 +30,19 @@ function home_refresh() {
     }
     // this actually creates the pretty buttons inside the div
     tags_avail_div.trigger('create');
-  })
+    // update list 
+    mnemedb.get_docs(response.docids, function(err, response){
+      console.log(response);
+      var list=$('#home #list').empty();
+      for(var i=0, elem; elem=response[i++];){
+        $(
+          '<li><a href="#">'+elem.doc.name+'</a><a href="#"> delete </a></li>'
+        ).appendTo(list);
+      }
+      list.trigger('create').listview('refresh');
+    })
+  })  
+  
 }
 
 // add a tag based on the data-tag property
