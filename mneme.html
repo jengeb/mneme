@@ -15,94 +15,10 @@
     <script src="javascript/jquery/jquery.mobile-1.3.0.min.js"></script>
     <script src="javascript/pouchdb/pouchdb-nightly.min.js"></script>
     <script src="javascript/mnemedb.js"></script>
-    <script>
-      var mnemedb=Mnemedb("ToDo");
+    <script src="javascript/mneme.js"></script>
 
-      // **********************************************************************
-      // home page
-
-      // refresh the available tags and list based on the selected tags
-      function home_refresh() {
-        var tags_sel = [];
-        // TODO: determine selected tags from the $("#tags_sel") div :)
-
-        // get document ids and available tags for current tag selection
-        mnemedb.get_tags_enabled_info(tags_sel, function(err, response){
-          // get and clear the available tags div
-          var tags_avail_div = $('#home #tags_avail').empty();
-          // sort available tags by count
-          var tags=mnemedb.sortbyvalue(response.tags_avail);
-          // inject tags one by one
-          for(var i=0; i<tags.length; i++){
-            var tag=tags[i];
-            // create html, add click handler and append to div
-            // (TODO: create html with templates)
-            $(
-              '<a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="c" data-tag="'+tag[0]+'">'+tag[0]+' <span class="button-mini-bubble ui-btn-up-c ui-btn-corner-all">'+tag[1]+'</span></a>'
-            ).click(home_add_tag).appendTo(tags_avail_div);
-          }
-          // this actually creates the pretty buttons inside the div
-          tags_avail_div.trigger('create');
-        })
-      }
-
-      // add a tag based on the data-tag property
-      function home_add_tag() {
-        // TODO
-        console.log( $(this).data('tag') );
-      }
-
-      function home_remove_tag() {
-        // TODO
-        console.log( $(this).data('tag') );
-      }
-
-      $(document).on("pagebeforeshow", "#home", function(){
-        home_refresh();
-      });
-    </script>
-
-    <style>
-      .ui-field-contain .ui-controlgroup-controls {
-        width: 77%;
-      }
-      .buttongroup .ui-btn {
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .ui-content .selectbox {
-        margin-top: -15px;
-        padding-bottom: 0.2em;
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-      .selectbox {
-        margin: 0 -15px;
-      }
-      .selectbox .ui-field-contain {
-        margin: 0.2em 0;
-      }
-      .itemlist {
-        margin-top: 0 !important;
-      }
-      .map, .picture{
-        width: 100%;
-        height: 400px;
-        background-color: #888888;
-      }
-      .button-disabled .ui-disabled {
-        opacity: 0.75;
-      }
-      .button-mini-bubble {
-        font-size: 11px;
-        padding: .1em .4em;
-        vertical-align: top;
-        margin-left: .1em;
-      }
-      #about{
-        max-width: 400px;
-      }
-    </style>
+    <link rel="stylesheet" href="css/mneme.css"/>
+    
   </head>
 
   <body>
