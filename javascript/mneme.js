@@ -7,6 +7,11 @@ var mnemedb=Mnemedb("ToDo");
 function home_refresh() {
   var tags_sel = [];
   // TODO: determine selected tags from the $("#tags_sel") div :)
+  var tags_sel_div = $('#home #tags_sel');
+  var children = tags_sel_div.children();
+  for(var i=0; i<children.length; i++){
+    tags_sel.push($(children[i]).data("tag"));    
+  }
 
   // get document ids and available tags for current tag selection
   mnemedb.get_tags_enabled_info(tags_sel, function(err, response){
@@ -30,13 +35,18 @@ function home_refresh() {
 
 // add a tag based on the data-tag property
 function home_add_tag() {
-  // TODO
-  console.log( $(this).data('tag') );
+  var tag=$(this).data('tag');
+  var tags_sel_div = $('#home #tags_sel');
+  $(
+    '<a href="#" data-role="button" data-mini="true" data-inline="true" data-theme="b" data-icon="delete" data-tag="'+tag+'">'+tag+'</a>'
+  ).click(home_remove_tag).appendTo(tags_sel_div);
+  tags_sel_div.trigger('create');
+  home_refresh();
 }
 
 function home_remove_tag() {
-  // TODO
-  console.log( $(this).data('tag') );
+  $(this).remove();
+  home_refresh();
 }
 
 $(document).on("pagebeforeshow", "#home", function(){
