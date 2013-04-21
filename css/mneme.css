@@ -37,3 +37,6 @@
 #about{
   max-width: 400px;
 }
+#tags_sel .ui-btn-inline, #tags_avail .ui-btn-inline {
+  margin-right: .4em;
+}
