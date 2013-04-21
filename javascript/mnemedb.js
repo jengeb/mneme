@@ -214,7 +214,13 @@ Mnemedb = function (dbname) {
 
   mnemedb.get_tags_all = function (callback) {
     return db.query(view_tags_all, function(err, response) {
-      callback(err, !err ? response.rows : null);
+      if (!err) {
+        var tags = {};
+        for (var i=0, obj; obj=response.rows[i++];) {
+          tags[obj.key] = obj.value;
+        }
+      }
+      callback(err, !err ? tags : null);
     });
   }
 
