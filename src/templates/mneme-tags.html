@@ -1,12 +1,18 @@
 <div>
   <h4>Selected tags</h4>
   <div>
-    <button ng-repeat="tag in tags_selected" ng-click="remove(tag)" type="button" class="btn btn-primary">{{tag}}</button>
+    <button ng-repeat="tag in tags_selected" ng-click="remove(tag)" type="button" class="btn btn-primary">
+      {{tag}}
+      <span class="glyphicon glyphicon-remove-sign hover-icon"></span>
+    </button>
   </div>
 </div>
 <div>
   <h4>Available tags</h4>
   <div>
-    <button ng-repeat="tag in tags_get(tags_selected)" ng-click="add(tag)" type="button" class="btn btn-secondary">{{tag}}</button>
+    <button ng-repeat="tag in tags_get(tags_selected)" ng-click="add(tag)" type="button" class="btn btn-secondary">
+      {{tag}}
+      <span class="glyphicon glyphicon-plus-sign hover-icon"></span>
+    </button>
   </div>
 </div>

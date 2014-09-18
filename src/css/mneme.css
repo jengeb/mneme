@@ -10,3 +10,15 @@ button.btn {
 .table-vmiddle > tbody > tr > td {
   vertical-align: middle;
 }
+
+.hover-icon {
+  margin-left: 6px;
+}
+
+.btn > .hover-icon {
+  visibility: hidden;
+}
+
+.btn:hover > .hover-icon {
+  visibility: visible;
+}
