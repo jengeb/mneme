@@ -32,7 +32,12 @@
       </thead>
       <tbody>
         <tr ng-repeat="mneme in mnemes_filtered | orderBy: '+name'">
-          <td><h4>{{mneme.name}}</h4></td>
+          <td>
+            <h4>{{mneme.name}}</h4>
+            <span ng-repeat="tag in mneme.tags" class="mneme-tag label label-success">
+              {{tag}}
+            </span>
+          </td>
           <td></td>
           <td>11 months ago</td>
           <td>6 km</td>

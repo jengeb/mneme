@@ -22,3 +22,7 @@ button.btn {
 .btn:hover > .hover-icon {
   visibility: visible;
 }
+
+.mneme-tag {
+  margin: 0.1em;
+}
