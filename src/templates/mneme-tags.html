@@ -1,4 +1,4 @@
-<div ng-if="tagnames_selected.length">
+<!--div ng-if="tagnames_selected.length">
   <h4>
     Selected filter tags
     <small>
@@ -11,21 +11,22 @@
       <span class="glyphicon glyphicon-minus-sign hover-icon"></span>
     </button>
   </div>
-</div>
+</div-->
 <div ng-if="tags_available.length">
-  <h4>
-    Add tags to filter
-    <small>
-      Choose from the following tags to filter your mnemes!
-      <!--The number in
-      parentheses is the number of remaining mnemes after including this tag in
-      the filter.-->
-    </small>
-  </h4>
+  <label>
+    Pick one or more of the following tags to filter your mnemes!
+    <!--The number in
+    parentheses is the number of remaining mnemes after including this tag in
+    the filter.-->
+  </label>
   <div>
-    <button ng-repeat="tag in tags_available | orderBy: '-count'" ng-click="add(tag)" type="button" class="btn btn-secondary">
-      {{tag.name}} <span class="badge">{{tag.count}}</span>
-      <span class="glyphicon glyphicon-plus-sign hover-icon"></span>
-    </button>
+    <span ng-repeat="tag in tags_available | orderBy: '-count'" ng-click="add(tag)" class="label label-info mneme-tag mneme-pointer mneme-hover-base">
+      {{tag.name}}
+      <span class="mneme-badge">{{tag.count}}</span>
+      <span class="glyphicon glyphicon-plus-sign mneme-hover-target"></span>
+    </span>
   </div>
 </div>
+<label ng-if="!tags_available.length">
+  There are no more tags for refining the filter!
+</label>

@@ -26,3 +26,28 @@ button.btn {
 .mneme-tag {
   margin: 0.1em;
 }
+
+.mneme-panel-filter {
+  margin-top: 1em;
+}
+
+.mneme-pointer, .mneme-panel-filter .panel-heading {
+  cursor: pointer;
+}
+
+.mneme-hover-target {
+  visibility: hidden;
+}
+
+.mneme-hover-base:hover > .mneme-hover-target {
+  visibility: visible;
+}
+
+.mneme-badge {
+  font-style: normal;
+  background-color: #428bca;
+  margin: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-radius: 0.5em;
+}

@@ -39,6 +39,9 @@ mneme.config(function ($routeProvider) {
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope) {
   $scope.tagnames_selected = [];
+  $scope.filter_tags_remove = function (tag) {
+    _.pull($scope.tagnames_selected, tag);
+  };
   $scope.contains = function (tag) {
     return _.contains($scope.tagnames_selected, tag);
   };
