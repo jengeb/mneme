@@ -35,9 +35,6 @@
           <td>
             <h4>{{mneme.name}}</h4>
             <span ng-repeat="tag in mneme.tags">
-              <span ng-if="contains(tag)" class="mneme-tag label label-primary">
-                {{tag}}
-              </span>
               <span ng-if="!contains(tag)" class="mneme-tag label label-info">
                 {{tag}}
               </span>
