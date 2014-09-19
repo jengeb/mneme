@@ -38,42 +38,44 @@ mneme.config(function ($routeProvider) {
 
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope) {
+  $scope.tagnames_selected = [];
+  $scope.mnemes = [
+    {
+      name: 'Soup populaire',
+      tags: ['Restaurant', 'never been there', 'Berlin']
+    },
+    {
+      name: 'Bo innovation',
+      tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
+    },
+    {
+      name: '+39',
+      tags: ['Restaurant', 'Italian', 'Berlin']
+    },
+    {
+      name: 'Tofu',
+      tags: ['shopping list', 'LPG']
+    },
+    {
+      name: 'Nordseekäse',
+      tags: ['shopping list', 'LPG']
+    },
+    {
+      name: 'Club-Mate',
+      tags: ['shopping list', 'Späti']
+    },
+    {
+      name: 'Noodle soup',
+      tags: ['shopping list', 'China']
+    }
+  ];
+
   $scope.tags_get = function (tagnames_selected) {
-    var mnemes = [
-      {
-        name: 'Soup populaire',
-        tags: ['Restaurant', 'never been there', 'Berlin']
-      },
-      {
-        name: 'Bo innovation',
-        tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
-      },
-      {
-        name: '+39',
-        tags: ['Restaurant', 'Italian', 'Berlin']
-      },
-      {
-        name: 'Tofu',
-        tags: ['shopping list', 'LPG']
-      },
-      {
-        name: 'Nordseekäse',
-        tags: ['shopping list', 'LPG']
-      },
-      {
-        name: 'Club-Mate',
-        tags: ['shopping list', 'Späti']
-      },
-      {
-        name: 'Noodle soup',
-        tags: ['shopping list', 'China']
-      }
-    ];
 
     // get the tags of all mnemes
-    var tags_all = _.pluck(mnemes, 'tags');
+    var tags_all = _.pluck($scope.mnemes, 'tags');
 
-    // strip out all tag arrays which do not contain all selected tags
+    // kick out all tag arrays which do not contain all selected tags
     var tags_remaining = _.filter(tags_all, function (tags) {
       return _.intersection(
           tags, tagnames_selected
@@ -106,4 +108,14 @@ mneme.controller('OverviewCtrl', function ($scope) {
 
     return tags;
   };
+
+  // update 'mnemes_selected' to match the tag filter
+  $scope.$watchCollection('tagnames_selected', function (tagnames_selected) {
+    // kick out all mnemes which do not contain all selected tags
+    $scope.mnemes_filtered = _.filter($scope.mnemes, function (mneme) {
+      return _.intersection(
+          mneme.tags, tagnames_selected
+        ).length === tagnames_selected.length;
+    });
+  });
 });
