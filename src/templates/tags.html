@@ -2,17 +2,11 @@
   <mneme-tags model-get="tags_get" model-selected="tagnames_selected"></mneme-tags>
   <hr>
   <div>
-    <h4>Selected:</h4>
-    <ul>
-      <li ng-repeat="tagname in tagnames_selected">{{tagname}}</li>
-    </ul>
-  </div>
-  <div>
     <label>
-      <input type="checkbox" checked>
+      <input type="checkbox" ng-model="show_map">
       Restrict to area on map
     </label>
-    <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;"></div>
+    <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;" ng-if="show_map"></div>
   </div>
   <hr>
   <div>
