@@ -1,14 +1,10 @@
 <div ng-controller="OverviewCtrl">
-  <mneme-tags model-get="tags_get" model-selected="tags_selected"></mneme-tags>
+  <mneme-tags model-get="tags_get" model-selected="tagnames_selected"></mneme-tags>
   <hr>
   <div>
-    <h4>All:</h4>
-    <ul>
-      <li ng-repeat="tag in tags_all">{{tag}}</li>
-    </ul>
     <h4>Selected:</h4>
     <ul>
-      <li ng-repeat="tag in tags_selected">{{tag}}</li>
+      <li ng-repeat="tagname in tagnames_selected">{{tagname}}</li>
     </ul>
   </div>
   <div>

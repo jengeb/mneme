@@ -8,15 +8,21 @@ mneme.directive('mnemeTags', function () {
     templateUrl: 'templates/mneme-tags.html',
     scope: {
       tags_get: '=modelGet',
-      tags_selected: '=modelSelected',
+      tagnames_selected: '=modelSelected',
     },
     link: function(scope, element, attrs) {
-      scope.tags_selected = scope.tags_selected || [];
+      scope.tagnames_selected = scope.tagnames_selected || [];
+      scope.$watchCollection('tagnames_selected', function (cur) {
+        scope.tags_available = scope.tags_get(scope.tagnames_selected);
+      });
       scope.add = function (tag) {
-        scope.tags_selected.push(tag);
+        scope.tagnames_selected.push(tag.name);
       };
-      scope.remove = function (tag) {
-        scope.tags_selected.splice(scope.tags_selected.indexOf(tag), 1);
+      scope.remove = function (tagname) {
+        console.log(scope.tagnames_selected);
+        console.log(tagname);
+        _.pull(scope.tagnames_selected, tagname);
+        console.log(scope.tagnames_selected);
       };
     }
   };
@@ -35,10 +41,31 @@ mneme.config(function ($routeProvider) {
 
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope) {
-  $scope.tags_get = function (tags_selected) {
-    var tags = ['Restaurant', 'Italian', 'Chinese', 'Vietnames', 'never been there'];
-    return tags.filter(function (el) {
-      return tags_selected.indexOf(el)===-1;
+  $scope.tags_get = function (tagnames_selected) {
+    var tags = [
+      {
+        name: 'Restaurant',
+        count: 10
+      },
+      {
+        name: 'Italian',
+        count: 6
+      },
+      {
+        name: 'Chinese',
+        count: 5,
+      },
+      {
+        name: 'Vietnamese',
+        count: 2,
+      },
+      {
+        name: 'never been there',
+        count: 3
+      }
+    ];
+    return _.filter(tags, function (tag) {
+      return !_.contains(tagnames_selected, tag.name);
     });
   };
 });
