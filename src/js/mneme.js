@@ -39,30 +39,71 @@ mneme.config(function ($routeProvider) {
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope) {
   $scope.tags_get = function (tagnames_selected) {
-    var tags = [
+    var mnemes = [
       {
-        name: 'Restaurant',
-        count: 10
+        name: 'Soup populaire',
+        tags: ['Restaurant', 'never been there', 'Berlin']
       },
       {
-        name: 'Italian',
-        count: 6
+        name: 'Bo innovation',
+        tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
       },
       {
-        name: 'Chinese',
-        count: 5,
+        name: '+39',
+        tags: ['Restaurant', 'Italian', 'Berlin']
       },
       {
-        name: 'Vietnamese',
-        count: 2,
+        name: 'Tofu',
+        tags: ['shopping list', 'LPG']
       },
       {
-        name: 'never been there',
-        count: 3
+        name: 'Nordseekäse',
+        tags: ['shopping list', 'LPG']
+      },
+      {
+        name: 'Club-Mate',
+        tags: ['shopping list', 'Späti']
+      },
+      {
+        name: 'Noodle soup',
+        tags: ['shopping list', 'China']
       }
     ];
-    return _.filter(tags, function (tag) {
-      return !_.contains(tagnames_selected, tag.name);
+
+    // get the tags of all mnemes
+    var tags_all = _.pluck(mnemes, 'tags');
+
+    // strip out all tag arrays which do not contain all selected tags
+    var tags_remaining = _.filter(tags_all, function (tags) {
+      return _.intersection(
+          tags, tagnames_selected
+        ).length === tagnames_selected.length;
     });
+
+    var map = _.map(tags_remaining, function (tags) {
+      var res = {};
+      _.forEach(tags || [], function (tag) {
+        res[tag] = 1;
+      });
+      return res;
+    });
+
+    var tags = _.reduce(map, function (res, cur) {
+      _.forIn(cur, function (val, key) {
+        res[key] = res[key] || 0;
+        res[key] = res[key] + val;
+      });
+      return res;
+    }, {});
+
+    // kick out the already selected tags
+    tags = _.omit(tags, tagnames_selected);
+
+    // reorganize tags as array of objects
+    tags = _.map(tags, function (val, key) {
+      return {name: key, count: val};
+    });
+
+    return tags;
   };
 });
