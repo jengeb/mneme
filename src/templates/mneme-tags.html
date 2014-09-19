@@ -1,5 +1,10 @@
-<div>
-  <h4>Selected tags</h4>
+<div ng-if="tagnames_selected.length">
+  <h4>
+    Selected filter tags
+    <small>
+      Only mnemes matching all of the following tags are displayed below.
+    </small>
+  </h4>
   <div>
     <button ng-repeat="tagname in tagnames_selected" ng-click="remove(tagname)" type="button" class="btn btn-primary">
       {{tagname}}
@@ -7,8 +12,16 @@
     </button>
   </div>
 </div>
-<div>
-  <h4>Available tags</h4>
+<div ng-if="tags_available.length">
+  <h4>
+    Add tags to filter
+    <small>
+      Choose from the following tags to filter your mnemes!
+      <!--The number in
+      parentheses is the number of remaining mnemes after including this tag in
+      the filter.-->
+    </small>
+  </h4>
   <div>
     <button ng-repeat="tag in tags_available" ng-click="add(tag)" type="button" class="btn btn-secondary">
       {{tag.name}} <span class="badge">{{tag.count}}</span>
