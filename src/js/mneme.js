@@ -19,10 +19,7 @@ mneme.directive('mnemeTags', function () {
         scope.tagnames_selected.push(tag.name);
       };
       scope.remove = function (tagname) {
-        console.log(scope.tagnames_selected);
-        console.log(tagname);
         _.pull(scope.tagnames_selected, tagname);
-        console.log(scope.tagnames_selected);
       };
     }
   };
