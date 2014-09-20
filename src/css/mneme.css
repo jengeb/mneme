@@ -45,3 +45,7 @@ body {
 hr.small {
   margin: 10px 0px;
 }
+
+.mneme-float-right {
+  float: right;
+}

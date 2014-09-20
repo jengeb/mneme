@@ -20,6 +20,12 @@
         {{tag}}
         <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
       </a>
+
+      <button ng-click="filter_tags = []; $event.stopPropagation();"
+          ng-show="filter_tags.length"
+          class="btn btn-danger btn-xs mneme-float-right">
+        <span class="glyphicon glyphicon-remove"></span> clear
+      </button>
     </div>
     <!-- filter panel body -->
     <div class="panel-body" ng-show="filter_show">
