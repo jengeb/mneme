@@ -13,6 +13,7 @@ body {
 }
 
 .mneme-tag {
+  display: inline-block;
   margin: 0.1em;
 }
 
@@ -44,8 +45,4 @@ body {
 
 hr.small {
   margin: 10px 0px;
-}
-
-.mneme-float-right {
-  float: right;
 }

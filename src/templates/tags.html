@@ -3,7 +3,7 @@
   <div class="panel panel-info mneme-panel-filter">
     <!-- filter panel heading -->
     <div ng-click="filter_show = !filter_show"
-        class="panel-heading mneme-pointer">
+        class="panel-heading mneme-pointer clearfix">
       <span class="glyphicon glyphicon-filter"></span> Filter
       <!-- arrow pointing down or up -->
       <span ng-if="!filter_show" class="caret"></span>
@@ -23,7 +23,7 @@
 
       <button ng-click="filter_tags = []; $event.stopPropagation();"
           ng-show="filter_tags.length"
-          class="btn btn-danger btn-xs mneme-float-right">
+          class="btn btn-danger btn-xs pull-right">
         <span class="glyphicon glyphicon-remove"></span> clear
       </button>
     </div>
