@@ -1,29 +1,37 @@
 // set up angular
 var mneme = angular.module('mneme', ['ngRoute']);
 
-// add mneme-tags element (realized via angularjs' directives)
-mneme.directive('mnemeTags', function () {
-  return {
-    restrict: 'E',
-    templateUrl: 'templates/mneme-tags.html',
-    scope: {
-      tags_get: '=modelGet',
-      tagnames_selected: '=modelSelected',
-    },
-    link: function(scope, element, attrs) {
-      scope.tagnames_selected = scope.tagnames_selected || [];
-      scope.$watchCollection('tagnames_selected', function (cur) {
-        scope.tags_available = scope.tags_get(scope.tagnames_selected);
-      });
-      scope.add = function (tag) {
-        scope.tagnames_selected.push(tag.name);
-      };
-      scope.remove = function (tagname) {
-        _.pull(scope.tagnames_selected, tagname);
-      };
-    }
-  };
-});
+// TODO: fetch mnemes from (pouch)db
+var mnemes = [
+  {
+    name: 'Soup populaire',
+    tags: ['Restaurant', 'never been there', 'Berlin']
+  },
+  {
+    name: 'Bo innovation',
+    tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
+  },
+  {
+    name: '+39',
+    tags: ['Restaurant', 'Italian', 'Berlin']
+  },
+  {
+    name: 'Tofu',
+    tags: ['shopping list', 'LPG']
+  },
+  {
+    name: 'Nordseekäse',
+    tags: ['shopping list', 'LPG']
+  },
+  {
+    name: 'Club-Mate',
+    tags: ['shopping list', 'Späti']
+  },
+  {
+    name: 'Noodle soup',
+    tags: ['shopping list', 'China']
+  }
+];
 
 // set up routes
 mneme.config(function ($routeProvider) {
@@ -38,54 +46,34 @@ mneme.config(function ($routeProvider) {
 
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope) {
-  $scope.tagnames_selected = [];
+  // TODO: get mnemes from db
+  $scope.mnemes = mnemes;
+
+  $scope.filter_tags = [];
+  $scope.filter_tags_remaining = [];
+  $scope.filter_tags_add = function (tag) {
+    $scope.filter_tags.push(tag);
+  };
   $scope.filter_tags_remove = function (tag) {
-    _.pull($scope.tagnames_selected, tag);
+    _.pull($scope.filter_tags, tag);
   };
-  $scope.contains = function (tag) {
-    return _.contains($scope.tagnames_selected, tag);
+  $scope.filter_tags_contains = function (tag) {
+    return _.contains($scope.filter_tags, tag);
   };
-  $scope.mnemes = [
-    {
-      name: 'Soup populaire',
-      tags: ['Restaurant', 'never been there', 'Berlin']
-    },
-    {
-      name: 'Bo innovation',
-      tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
-    },
-    {
-      name: '+39',
-      tags: ['Restaurant', 'Italian', 'Berlin']
-    },
-    {
-      name: 'Tofu',
-      tags: ['shopping list', 'LPG']
-    },
-    {
-      name: 'Nordseekäse',
-      tags: ['shopping list', 'LPG']
-    },
-    {
-      name: 'Club-Mate',
-      tags: ['shopping list', 'Späti']
-    },
-    {
-      name: 'Noodle soup',
-      tags: ['shopping list', 'China']
-    }
-  ];
 
-  $scope.tags_get = function (tagnames_selected) {
-
+  // update remaining filter tags on change of 'filter_tags' and 'mnemes'.
+  // Warning: do not simply use filter_tags_get_remaining(...) in the
+  // template! This causes angular to run into an infinite loop because of
+  // dirty checking...
+  var filter_tags_remaining_update = function () {
     // get the tags of all mnemes
     var tags_all = _.pluck($scope.mnemes, 'tags');
 
     // kick out all tag arrays which do not contain all selected tags
     var tags_remaining = _.filter(tags_all, function (tags) {
       return _.intersection(
-          tags, tagnames_selected
-        ).length === tagnames_selected.length;
+          tags, $scope.filter_tags
+        ).length === $scope.filter_tags.length;
     });
 
     var map = _.map(tags_remaining, function (tags) {
@@ -105,23 +93,27 @@ mneme.controller('OverviewCtrl', function ($scope) {
     }, {});
 
     // kick out the already selected tags
-    tags = _.omit(tags, tagnames_selected);
+    tags = _.omit(tags, $scope.filter_tags);
 
     // reorganize tags as array of objects
     tags = _.map(tags, function (val, key) {
       return {name: key, count: val};
     });
 
-    return tags;
+    $scope.filter_tags_remaining = tags;
   };
+  $scope.$watchCollection('filter_tags', filter_tags_remaining_update);
+  $scope.$watchCollection('mnemes', filter_tags_remaining_update);
 
-  // update 'mnemes_selected' to match the tag filter
-  $scope.$watchCollection('tagnames_selected', function (tagnames_selected) {
+  // update 'mnemes_filtered' to match the tag filter
+  var mnemes_filtered_update = function () {
     // kick out all mnemes which do not contain all selected tags
     $scope.mnemes_filtered = _.filter($scope.mnemes, function (mneme) {
       return _.intersection(
-          mneme.tags, tagnames_selected
-        ).length === tagnames_selected.length;
+          mneme.tags, $scope.filter_tags
+        ).length === $scope.filter_tags.length;
     });
-  });
+  };
+  $scope.$watchCollection('filter_tags', mnemes_filtered_update);
+  $scope.$watchCollection('mnemes', mnemes_filtered_update);
 });

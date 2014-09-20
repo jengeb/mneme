@@ -3,24 +3,13 @@ body {
   padding-bottom: 20px;
 }
 
-button.btn {
+.mneme-btn {
   margin: 0.1em;
 }
 
+/* align table elements vertically */
 .table-vmiddle > tbody > tr > td {
   vertical-align: middle;
-}
-
-.hover-icon {
-  margin-left: 6px;
-}
-
-.btn > .hover-icon {
-  visibility: hidden;
-}
-
-.btn:hover > .hover-icon {
-  visibility: visible;
 }
 
 .mneme-tag {
@@ -31,7 +20,8 @@ button.btn {
   margin-top: 1em;
 }
 
-.mneme-pointer, .mneme-panel-filter .panel-heading {
+/* show link-style cursor (like a href) */
+.mneme-pointer {
   cursor: pointer;
 }
 
