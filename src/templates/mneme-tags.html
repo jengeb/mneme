@@ -20,11 +20,14 @@
     the filter.-->
   </label>
   <div>
-    <span ng-repeat="tag in tags_available | orderBy: '-count'" ng-click="add(tag)" class="label label-info mneme-tag mneme-pointer mneme-hover-base">
+    <a href=""
+        ng-repeat="tag in tags_available | orderBy: '-count'"
+        ng-click="add(tag)"
+        class="label label-info mneme-tag mneme-hover-base">
       {{tag.name}}
       <span class="mneme-badge">{{tag.count}}</span>
       <span class="glyphicon glyphicon-plus-sign mneme-hover-target"></span>
-    </span>
+    </a>
   </div>
 </div>
 <label ng-if="!tags_available.length">

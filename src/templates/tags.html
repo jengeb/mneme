@@ -1,18 +1,25 @@
 <div ng-controller="OverviewCtrl">
   <div class="panel panel-info mneme-panel-filter">
-    <div ng-click="show_filters = !show_filters" class="panel-heading mneme-pointer">
+    <div ng-click="show_filters = !show_filters"
+        class="panel-heading mneme-pointer">
       <span class="glyphicon glyphicon-filter"></span> Filter
       <span ng-if="!show_filters" class="caret"></span>
       <span ng-if="show_filters" class="dropup">
         <span class="caret"></span>
       </span>
-      <span ng-repeat="tagname in tagnames_selected" class="label label-primary mneme-tag mneme-pointer mneme-hover-base" ng-click="filter_tags_remove(tagname); $event.stopPropagation();">
+      <a href=""
+          ng-repeat="tagname in tagnames_selected"
+          ng-click="filter_tags_remove(tagname); $event.stopPropagation();"
+          class="label label-primary mneme-tag mneme-hover-base">
         {{tagname}}
-        <span class="glyphicon glyphicon-minus-sign hover-icon mneme-hover-target"></span>
-      </span>
+        <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
+      </a>
     </div>
     <div class="panel-body" ng-if="show_filters">
-      <mneme-tags model-get="tags_get" model-selected="tagnames_selected"></mneme-tags>
+      <mneme-tags
+          model-get="tags_get"
+          model-selected="tagnames_selected">
+      </mneme-tags>
       <hr>
       <div>
         <label>
