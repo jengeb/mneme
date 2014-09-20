@@ -64,7 +64,7 @@
         <th>Name</th>
         <th>Deadline</th>
         <th>Creation date</th>
-        <th>Distance from map center</th>
+        <th ng-if="filter_map_show">Distance from map center</th>
         <th></th>
       </tr>
     </thead>
@@ -81,7 +81,7 @@
         </td>
         <td></td>
         <td>11 months ago</td>
-        <td>6 km</td>
+        <td ng-if="filter_map_show">6 km</td>
         <td>
           <button type="button" class="btn btn-primary mneme-btn">
             <span class="glyphicon glyphicon-edit"></span> edit
