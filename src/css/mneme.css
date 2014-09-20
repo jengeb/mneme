@@ -41,3 +41,7 @@ body {
   padding-right: 0.5em;
   border-radius: 0.5em;
 }
+
+hr.small {
+  margin: 10px 0px;
+}
