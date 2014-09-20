@@ -13,8 +13,8 @@ body {
 }
 
 .mneme-tag {
-  display: inline-block;
   margin: 0.1em;
+  display: inline-block;
 }
 
 .mneme-panel-filter {
@@ -43,6 +43,14 @@ body {
   border-radius: 0.5em;
 }
 
+.mneme-filter-icon {
+  margin-right: 0.5em;
+}
+
 hr.small {
   margin: 10px 0px;
+}
+
+.mneme-filter-clear {
+  margin: 0.1em;
 }

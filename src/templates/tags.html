@@ -6,8 +6,8 @@
         class="panel-heading mneme-pointer clearfix">
       <span class="glyphicon glyphicon-filter"></span> Filter
       <!-- arrow pointing down or up -->
-      <span ng-if="!filter_show" class="caret"></span>
-      <span ng-if="filter_show" class="dropup">
+      <span ng-show="!filter_show" class="caret"></span>
+      <span ng-show="filter_show" class="dropup">
         <span class="caret"></span>
       </span>
 
@@ -21,38 +21,62 @@
         <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
       </a>
 
-      <button ng-click="filter_tags = []; $event.stopPropagation();"
-          ng-show="filter_tags.length"
-          class="btn btn-danger btn-xs pull-right">
+      <!-- show map restriction label -->
+      <a href=""
+          ng-click="filter_map = false; $event.stopPropagation();"
+          ng-show="filter_map"
+          class="label label-default mneme-tag mneme-hover-base">
+        <span class="glyphicon glyphicon-globe"></span>
+        map filter
+        <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
+      </a>
+
+      <!-- clear filter button -->
+      <button
+          ng-click="filter_tags = []; filter_map = false; $event.stopPropagation();"
+          ng-show="filter_tags.length || filter_map"
+          class="btn btn-danger btn-xs pull-right mneme-filter-clear">
         <span class="glyphicon glyphicon-remove"></span> clear
       </button>
     </div>
     <!-- filter panel body -->
-    <div class="panel-body" ng-show="filter_show">
-      <div ng-if="filter_tags_remaining.length">
-        <label>Pick one or more of the following tags to filter your mnemes!</label>
-        <div>
-          <a href=""
-              ng-repeat="tag in filter_tags_remaining | orderBy: '-count'"
-              ng-click="filter_tags_add(tag.name)"
-              class="label label-info mneme-tag mneme-hover-base">
-            {{tag.name}}
-            <span class="mneme-badge">{{tag.count}}</span>
-            <span class="glyphicon glyphicon-plus-sign mneme-hover-target"></span>
-          </a>
+    <div collapse="!filter_show">
+      <div class="panel-body">
+        <div ng-show="filter_tags_remaining.length">
+          <label>
+            <span class="glyphicon glyphicon-tag mneme-filter-icon"></span>
+            Pick one or more of the following tags to filter your mnemes!
+          </label>
+          <div>
+            <a href=""
+                ng-repeat="tag in filter_tags_remaining | orderBy: '-count'"
+                ng-click="filter_tags_add(tag.name)"
+                class="label label-info mneme-tag mneme-hover-base">
+              {{tag.name}}
+              <span class="mneme-badge">{{tag.count}}</span>
+              <span class="glyphicon glyphicon-plus-sign mneme-hover-target"></span>
+            </a>
+          </div>
         </div>
-      </div>
-      <label ng-if="!filter_tags_remaining.length">
-        There are no more tags for refining the filter!
-      </label>
-      <hr class="small">
-      <!-- TODO: map filter -->
-      <div>
-        <label>
-          <input type="checkbox" ng-model="filter_map_show">
-          Restrict to area on map
+        <label ng-show="!filter_tags_remaining.length">
+          <span class="glyphicon glyphicon-tag mneme-filter-icon"></span>
+          There are no more tags for refining the filter!
         </label>
-        <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;" ng-if="filter_map_show"></div>
+        <hr class="small">
+        <!-- TODO: map filter -->
+        <div>
+          <label>
+            <button
+                ng-model="filter_map" btn-checkbox
+                type="button" class="btn btn-default btn-xs">
+              <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+              Restrict to area on map
+            </button>
+          </label>
+          <div collapse="!filter_map">
+            <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,7 +88,7 @@
         <th>Name</th>
         <th>Deadline</th>
         <th>Creation date</th>
-        <th ng-if="filter_map_show">Distance from map center</th>
+        <th ng-if="filter_map">Distance from map center</th>
         <th></th>
       </tr>
     </thead>
@@ -81,7 +105,7 @@
         </td>
         <td></td>
         <td>11 months ago</td>
-        <td ng-if="filter_map_show">6 km</td>
+        <td ng-if="filter_map">6 km</td>
         <td>
           <button type="button" class="btn btn-primary mneme-btn">
             <span class="glyphicon glyphicon-edit"></span> edit

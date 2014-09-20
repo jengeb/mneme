@@ -1,5 +1,5 @@
 // set up angular
-var mneme = angular.module('mneme', ['ngRoute']);
+var mneme = angular.module('mneme', ['ngRoute', 'ui.bootstrap']);
 
 // TODO: fetch mnemes from (pouch)db
 var mnemes = [
@@ -9,7 +9,7 @@ var mnemes = [
   },
   {
     name: 'Bo innovation',
-    tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese']
+    tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese', 'Michelin *']
   },
   {
     name: '+39',
