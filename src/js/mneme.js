@@ -1,37 +1,10 @@
 // set up angular
 var mneme = angular.module('mneme', ['ngRoute', 'ui.bootstrap']);
 
-// TODO: fetch mnemes from (pouch)db
-var mnemes = [
-  {
-    name: 'Soup populaire',
-    tags: ['Restaurant', 'never been there', 'Berlin']
-  },
-  {
-    name: 'Bo innovation',
-    tags: ['Restaurant', 'never been there', 'Hong Kong', 'Chinese', 'Michelin *']
-  },
-  {
-    name: '+39',
-    tags: ['Restaurant', 'Italian', 'Berlin']
-  },
-  {
-    name: 'Tofu',
-    tags: ['shopping list', 'LPG']
-  },
-  {
-    name: 'Nordseekäse',
-    tags: ['shopping list', 'LPG']
-  },
-  {
-    name: 'Club-Mate',
-    tags: ['shopping list', 'Späti']
-  },
-  {
-    name: 'Noodle soup',
-    tags: ['shopping list', 'China']
-  }
-];
+// set up the pouchdb database
+mneme.factory('mnemedb', function() {
+  return new PouchDB('mnemedb');
+});
 
 // set up routes
 mneme.config(function ($routeProvider) {
@@ -45,9 +18,48 @@ mneme.config(function ($routeProvider) {
 });
 
 // set up Overview controller
-mneme.controller('OverviewCtrl', function ($scope) {
-  // TODO: get mnemes from db
-  $scope.mnemes = mnemes;
+mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
+  // TODO: remove
+  db = mnemedb;
+  scope = $scope;
+
+  $scope.mnemedb = mnemedb;
+
+  // query mnemes (all docs with type 'mneme')
+  var query_mnemes = function (callback) {
+    mnemedb.query(function (doc) {
+      if (doc.type==='mneme') {
+        emit(doc.name);
+      }
+    },
+    {include_docs: true},
+    function(err, data) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(data);
+      }
+    });
+  };
+
+  // set mnemes initially and subscribe to changes
+  query_mnemes(function (data) {
+    $timeout(function () {
+      $scope.mnemes = _.pluck(data.rows, 'doc');
+      // update if the database changes
+      db.changes({
+        since: 'now',
+        live: true
+      }).on('change', function() {
+        query_mnemes(function (data) {
+          $timeout(function () {
+            $scope.mnemes = _.pluck(data.rows, 'doc');
+          });
+        });
+      });
+    });
+  });
+
 
   $scope.filter_tags = [];
   $scope.filter_tags_remaining = [];

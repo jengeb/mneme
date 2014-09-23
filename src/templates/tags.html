@@ -113,7 +113,9 @@
           <button type="button" class="btn btn-primary mneme-btn">
             <span class="glyphicon glyphicon-edit"></span> edit
           </button>
-          <button type="button" class="btn btn-danger mneme-btn">
+          <button
+              ng-click="mnemedb.remove(mneme._id, mneme._rev)"
+              type="button" class="btn btn-danger mneme-btn">
             <span class="glyphicon glyphicon-remove"></span> remove
           </button>
         </td>
