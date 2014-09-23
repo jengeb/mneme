@@ -8,17 +8,29 @@ mneme.factory('mnemedb', function() {
 
 // set up routes
 mneme.config(function ($routeProvider) {
-  $routeProvider.
-    when('/tags', {
-      templateUrl: 'templates/tags.html'
-    }).
-    otherwise({
-      redirectTo: '/tags'
+  $routeProvider
+    .when('/overview', {
+      templateUrl: 'templates/overview.html',
+      reloadOnSearch: false
+    })
+    .otherwise({
+      redirectTo: '/overview'
     });
 });
 
+// helper function to sanitize tags that are passed in the URL search part
+function sanitize_tags (tags) {
+  // sanitize parameters
+  if (_.isString(tags)) {
+    tags = [tags];
+  }
+  return tags || [];
+}
+
 // set up Overview controller
-mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
+mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
+    $location, mnemedb) {
+
   // store mnemedb on scope in order to allow deletions
   $scope.mnemedb = mnemedb;
 
@@ -57,7 +69,9 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
     changes.cancel();
   });
 
-  $scope.filter_tags = [];
+  // get parameters from query part of URL via $routeParams
+  $scope.filter_tags = sanitize_tags($routeParams.t);
+
   $scope.filter_tags_remaining = [];
   $scope.filter_tags_add = function (tag) {
     $scope.filter_tags.push(tag);
@@ -124,4 +138,12 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
   };
   $scope.$watchCollection('filter_tags', mnemes_filtered_update);
   $scope.$watchCollection('mnemes', mnemes_filtered_update);
+
+  // update URL with filter parameters
+  var update_url = function () {
+    $location.search({
+      't': $scope.filter_tags
+    });
+  };
+  $scope.$watchCollection('filter_tags', update_url);
 });
