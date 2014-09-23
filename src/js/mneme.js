@@ -19,9 +19,7 @@ mneme.config(function ($routeProvider) {
 
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
-  // TODO: remove
-  db = mnemedb;
-
+  // store mnemedb on scope in order to allow deletions
   $scope.mnemedb = mnemedb;
 
   // query mnemes (all docs with type 'mneme')
@@ -43,7 +41,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
 
   // subscribe to changes in mneme pouchdb and store results in $scope.mnemes
   // (also populates $scope.mnemes initially)
-  mnemedb.changes({
+  var changes = mnemedb.changes({
     since: 'now',
     live: true
   }).on('change', function() {
@@ -52,6 +50,11 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
         $scope.mnemes = _.pluck(data.rows, 'doc');
       });
     });
+  });
+
+  // cancel pouchdb changes subscription if the scope is destroyed
+  $scope.$on('$destroy', function () {
+    changes.cancel();
   });
 
   $scope.filter_tags = [];
