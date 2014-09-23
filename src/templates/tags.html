@@ -17,8 +17,9 @@
           ng-repeat="tag in filter_tags"
           ng-click="filter_tags_remove(tag); $event.stopPropagation();"
           class="label label-primary mneme-tag mneme-hover-base">
+        <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+        <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
         {{tag}}
-        <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
       </a>
 
       <!-- show map restriction label -->
@@ -26,9 +27,9 @@
           ng-click="filter_map = false; $event.stopPropagation();"
           ng-show="filter_map"
           class="label label-default mneme-tag mneme-hover-base">
-        <span class="glyphicon glyphicon-globe"></span>
+        <span class="glyphicon glyphicon-globe mneme-hover-hide"></span>
+        <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
         map filter
-        <span class="glyphicon glyphicon-minus-sign mneme-hover-target"></span>
       </a>
 
       <!-- clear filter button -->
@@ -44,7 +45,7 @@
       <div class="panel-body">
         <div ng-show="filter_tags_remaining.length">
           <label>
-            <span class="glyphicon glyphicon-tag mneme-filter-icon"></span>
+            <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
             Pick one or more of the following tags to filter your mnemes!
           </label>
           <div>
@@ -52,9 +53,10 @@
                 ng-repeat="tag in filter_tags_remaining | orderBy: '-count'"
                 ng-click="filter_tags_add(tag.name)"
                 class="label label-info mneme-tag mneme-hover-base">
+              <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+              <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
               {{tag.name}}
               <span class="mneme-badge">{{tag.count}}</span>
-              <span class="glyphicon glyphicon-plus-sign mneme-hover-target"></span>
             </a>
           </div>
         </div>
@@ -99,6 +101,7 @@
           <span ng-repeat="tag in mneme.tags">
             <span ng-if="!filter_tags_contains(tag)"
                 class="mneme-tag label label-info">
+              <span class="glyphicon glyphicon-tag"></span>
               {{tag}}
             </span>
           </span>

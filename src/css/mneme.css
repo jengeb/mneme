@@ -26,12 +26,20 @@ body {
   cursor: pointer;
 }
 
-.mneme-hover-target {
-  visibility: hidden;
+.mneme-hover-show {
+  display: none;
 }
 
-.mneme-hover-base:hover > .mneme-hover-target {
-  visibility: visible;
+.mneme-hover-base:hover > .mneme-hover-show {
+  display: inline-block;
+}
+
+.mneme-hover-hide {
+  display: inline-block;
+}
+
+.mneme-hover-base:hover > .mneme-hover-hide {
+  display: none;
 }
 
 .mneme-badge {
