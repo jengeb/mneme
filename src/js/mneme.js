@@ -21,7 +21,6 @@ mneme.config(function ($routeProvider) {
 mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
   // TODO: remove
   db = mnemedb;
-  scope = $scope;
 
   $scope.mnemedb = mnemedb;
 
@@ -42,24 +41,18 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, mnemedb) {
     });
   };
 
-  // set mnemes initially and subscribe to changes
-  query_mnemes(function (data) {
-    $timeout(function () {
-      $scope.mnemes = _.pluck(data.rows, 'doc');
-      // update if the database changes
-      db.changes({
-        since: 'now',
-        live: true
-      }).on('change', function() {
-        query_mnemes(function (data) {
-          $timeout(function () {
-            $scope.mnemes = _.pluck(data.rows, 'doc');
-          });
-        });
+  // subscribe to changes in mneme pouchdb and store results in $scope.mnemes
+  // (also populates $scope.mnemes initially)
+  mnemedb.changes({
+    since: 'now',
+    live: true
+  }).on('change', function() {
+    query_mnemes(function (data) {
+      $timeout(function () {
+        $scope.mnemes = _.pluck(data.rows, 'doc');
       });
     });
   });
-
 
   $scope.filter_tags = [];
   $scope.filter_tags_remaining = [];
