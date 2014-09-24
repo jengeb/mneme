@@ -84,7 +84,8 @@
   </div>
 
   <!-- filtererd mneme list -->
-  <table class="table table-striped table-hover table-vmiddle">
+  <table ng-show="mnemes_filtered.length"
+      class="table table-striped table-hover table-vmiddle">
     <thead>
       <tr>
         <th>Name</th>
@@ -122,4 +123,16 @@
       </tr>
     </tbody>
   </table>
+  <!-- show message if no mnemes are stored -->
+  <div ng-show="!mnemes.length" class="alert alert-info clearfix">
+    <strong>No mnemes are stored in the database!</strong>
+    <a href="#/new" type="button" class="btn btn-primary pull-right">
+      Add a new mneme!
+    </a>
+  </div>
+  <!-- show message if filtered mneme list is empty (but mnemes are present) -->
+  <div ng-show="mnemes.length && !mnemes_filtered.length"
+      class="alert alert-info">
+    <strong>No mnemes match the current filter settings!</strong>
+  </div>
 </div>
