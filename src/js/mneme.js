@@ -11,11 +11,11 @@ mneme.factory('mnemedb', function (pouchdb) {
     mnemes: undefined
   };
 
+  // watch the database for changes and update views
   mnemedb.db.changes({
     since: 'now',
     live: true
   }).then(null, null, function (res) {
-    console.log(res);
     // query for mnemes
     mnemedb.db.query(function (doc) {
         if (doc.type==='mneme') {
