@@ -1,0 +1,36 @@
+<div ng-controller="NewCtrl">
+  <h2>New mneme</h2>
+  <form role="form">
+    <!-- name -->
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="name">Name</label>
+        <input ng-model="name" type="text" class="form-control" id="name"
+          placeholder="Example: buy rice">
+      </div>
+    </div>
+
+    <!-- labels -->
+    <div class="form-group">
+      <label for="tags">Tags</label>
+      <a href ng-repeat="tag in tags" ng-click="tags_remove(tag)"
+          class="label label-primary mneme-tag mneme-hover-base">
+        <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+        <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+        {{tag}}
+      </a>
+      <small ng-show="!tags.length">
+        No tags have been specified yet.
+      </small>
+    </div>
+
+    <hr>
+
+    <button ng-click="save()" type="submit" class="btn btn-primary">
+      Save
+    </button>
+    <a href="#/overview" type="button" class="btn btn-default">
+      Back to mneme overview
+    </a>
+  </form>
+</div>
