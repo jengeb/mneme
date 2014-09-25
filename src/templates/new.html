@@ -1,6 +1,6 @@
 <div ng-controller="NewCtrl">
   <h2>New mneme</h2>
-  <form role="form">
+  <form role="form" ng-submit="validate() && save()">
     <!-- name -->
     <div class="row">
       <div class="form-group col-md-6">
@@ -29,10 +29,16 @@
     <div class="row">
       <div class="col-md-6">
         <div class="input-group">
-          <input ng-model="tag_new" 
+          <input
+              ng-model="tag_new"
+              typeahead="tag.name for tag in tags_used | filter:$viewValue | limitTo:8"
+              ng-keydown="$event.keyCode == 13 && ($event.preventDefault() || tag_new_validate() && tags_add())"
+              placeholder="Example: shopping list"
+              type="text" class="form-control">
+          <!--input ng-model="tag_new" 
               ng-keydown="$event.keyCode == 13 && ($event.preventDefault() || tag_new_validate() && tags_add())"
               type="text" class="form-control"
-              placeholder="Example: shopping list">
+              placeholder="Example: shopping list"-->
           <span class="input-group-btn">
             <button
                 ng-click="tags_add()"
@@ -45,10 +51,21 @@
         </div>
       </div>
     </div>
+    <div>
+      <a href=""
+          ng-repeat="tag in tags_used | orderBy: '-count'"
+          ng-click="tags.push(tag.name)"
+          class="label label-info mneme-tag mneme-hover-base">
+        <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+        <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
+        {{tag.name}}
+        <span class="mneme-badge">{{tag.count}}</span>
+      </a>
+    </div>
 
     <hr>
 
-    <button ng-click="save()" ng-class="{disabled: !validate()}"
+    <button ng-class="{disabled: !validate()}"
         type="submit" class="btn btn-primary">
       Save
     </button>

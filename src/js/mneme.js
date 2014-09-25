@@ -31,6 +31,24 @@ mneme.factory('mnemedb', function (pouchdb) {
   return mnemedb;
 });
 
+var get_tags_counts = function (tags_list) {
+  var map = _.map(tags_list, function (tags) {
+    var res = {};
+    _.forEach(tags || [], function (tag) {
+      res[tag] = 1;
+    });
+    return res;
+  });
+
+  return _.reduce(map, function (res, cur) {
+    _.forIn(cur, function (val, key) {
+      res[key] = res[key] || 0;
+      res[key] = res[key] + val;
+    });
+    return res;
+  }, {});
+};
+
 // set up routes
 mneme.config(function ($routeProvider) {
   $routeProvider
@@ -89,24 +107,10 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
         ).length === $scope.filter_tags.length;
     });
 
-    var map = _.map(tags_remaining, function (tags) {
-      var res = {};
-      _.forEach(tags || [], function (tag) {
-        res[tag] = 1;
-      });
-      return res;
-    });
-
-    var tags = _.reduce(map, function (res, cur) {
-      _.forIn(cur, function (val, key) {
-        res[key] = res[key] || 0;
-        res[key] = res[key] + val;
-      });
-      return res;
-    }, {});
+    var tags_counts = get_tags_counts(tags_remaining);
 
     // kick out the already selected tags
-    tags = _.omit(tags, $scope.filter_tags);
+    tags = _.omit(tags_counts, $scope.filter_tags);
 
     // reorganize tags as array of objects
     tags = _.map(tags, function (val, key) {
@@ -141,11 +145,12 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
 
 mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
       $location, mnemedb) {
+  $scope.mnemedb = mnemedb;
+
   $scope.tags = [];
   $scope.tags_remove = function (tag) {
     _.pull($scope.tags, tag);
   };
-
   // add a tag via textbox
   $scope.tags_add = function () {
     $scope.tags.push($scope.tag_new);
@@ -155,6 +160,25 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
     return !_.contains($scope.tags, $scope.tag_new) &&
         $scope.tag_new && $scope.tag_new.length;
   };
+
+  // used tags
+  $scope.tags_used = [];
+  var tags_used_update = function () {
+    // get the tags of all mnemes
+    var tags_all = _.pluck($scope.mnemedb.mnemes, 'tags');
+
+    var tags_counts = get_tags_counts(tags_all);
+
+    // kick out the already selected tags
+    tags_counts = _.omit(tags_counts, $scope.tags);
+
+    // reorganize tags as array of objects
+    $scope.tags_used = _.map(tags_counts, function (val, key) {
+      return {name: key, count: val};
+    });
+  };
+  $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
+  $scope.$watchCollection('tags', tags_used_update);
 
   $scope.validate = function () {
     return $scope.name && $scope.name.length;
