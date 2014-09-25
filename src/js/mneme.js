@@ -1,9 +1,34 @@
 // set up angular
-var mneme = angular.module('mneme', ['ngRoute', 'ui.bootstrap']);
+var mneme = angular.module('mneme', ['ngRoute', 'ui.bootstrap', 'pouchdb']);
 
 // set up the pouchdb database
-mneme.factory('mnemedb', function() {
-  return new PouchDB('mnemedb');
+mneme.factory('mnemedb', function (pouchdb) {
+  mnemedb = {
+    db: pouchdb.create('mnemedb'),
+    // the result of queries end up in the following properties
+    // (as long as they are undefined, the initial query of the database is
+    // not yet completed)
+    mnemes: undefined
+  };
+
+  mnemedb.db.changes({
+    since: 'now',
+    live: true
+  }).then(null, null, function (res) {
+    console.log(res);
+    // query for mnemes
+    mnemedb.db.query(function (doc) {
+        if (doc.type==='mneme') {
+          emit(doc.name);
+        }
+      },
+      {include_docs: true}
+    ).then(function (data) {
+      mnemedb.mnemes = _.pluck(data.rows, 'doc');
+    });
+  });
+
+  return mnemedb;
 });
 
 // set up routes
@@ -11,6 +36,10 @@ mneme.config(function ($routeProvider) {
   $routeProvider
     .when('/overview', {
       templateUrl: 'templates/overview.html',
+      reloadOnSearch: false
+    })
+    .when('/new', {
+      templateUrl: 'templates/new.html',
       reloadOnSearch: false
     })
     .otherwise({
@@ -34,41 +63,6 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // store mnemedb on scope in order to allow deletions
   $scope.mnemedb = mnemedb;
 
-  // query mnemes (all docs with type 'mneme')
-  var query_mnemes = function (callback) {
-    mnemedb.query(function (doc) {
-      if (doc.type==='mneme') {
-        emit(doc.name);
-      }
-    },
-    {include_docs: true},
-    function(err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        callback(data);
-      }
-    });
-  };
-
-  // subscribe to changes in mneme pouchdb and store results in $scope.mnemes
-  // (also populates $scope.mnemes initially)
-  var changes = mnemedb.changes({
-    since: 'now',
-    live: true
-  }).on('change', function() {
-    query_mnemes(function (data) {
-      $timeout(function () {
-        $scope.mnemes = _.pluck(data.rows, 'doc');
-      });
-    });
-  });
-
-  // cancel pouchdb changes subscription if the scope is destroyed
-  $scope.$on('$destroy', function () {
-    changes.cancel();
-  });
-
   // get parameters from query part of URL via $routeParams
   $scope.filter_tags = sanitize_tags($routeParams.t);
 
@@ -89,7 +83,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // dirty checking...
   var filter_tags_remaining_update = function () {
     // get the tags of all mnemes
-    var tags_all = _.pluck($scope.mnemes, 'tags');
+    var tags_all = _.pluck($scope.mnemedb.mnemes, 'tags');
 
     // kick out all tag arrays which do not contain all selected tags
     var tags_remaining = _.filter(tags_all, function (tags) {
@@ -125,19 +119,19 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     $scope.filter_tags_remaining = tags;
   };
   $scope.$watchCollection('filter_tags', filter_tags_remaining_update);
-  $scope.$watchCollection('mnemes', filter_tags_remaining_update);
+  $scope.$watchCollection('mnemedb.mnemes', filter_tags_remaining_update);
 
   // update 'mnemes_filtered' to match the tag filter
   var mnemes_filtered_update = function () {
     // kick out all mnemes which do not contain all selected tags
-    $scope.mnemes_filtered = _.filter($scope.mnemes, function (mneme) {
+    $scope.mnemes_filtered = _.filter($scope.mnemedb.mnemes, function (mneme) {
       return _.intersection(
           mneme.tags, $scope.filter_tags
         ).length === $scope.filter_tags.length;
     });
   };
   $scope.$watchCollection('filter_tags', mnemes_filtered_update);
-  $scope.$watchCollection('mnemes', mnemes_filtered_update);
+  $scope.$watchCollection('mnemedb.mnemes', mnemes_filtered_update);
 
   // update URL with filter parameters
   var update_url = function () {
@@ -146,4 +140,19 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     });
   };
   $scope.$watchCollection('filter_tags', update_url);
+});
+
+mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
+      $location, mnemedb) {
+  $scope.tags = [];
+  $scope.save = function () {
+    var mneme = {
+      type: 'mneme',
+      name: $scope.name,
+      tags: $scope.tags
+    };
+    mnemedb.db.post(mneme).then(function () {
+      $location.path('/overview');
+    });
+  };
 });

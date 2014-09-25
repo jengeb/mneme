@@ -115,7 +115,7 @@
             <span class="glyphicon glyphicon-edit"></span> edit
           </button>
           <button
-              ng-click="mnemedb.remove(mneme._id, mneme._rev)"
+              ng-click="mnemedb.db.remove(mneme._id, mneme._rev)"
               type="button" class="btn btn-danger mneme-btn">
             <span class="glyphicon glyphicon-remove"></span> remove
           </button>
@@ -124,14 +124,14 @@
     </tbody>
   </table>
   <!-- show message if no mnemes are stored -->
-  <div ng-show="!mnemes.length" class="alert alert-info clearfix">
+  <div ng-show="!mnemedb.mnemes.length" class="alert alert-info clearfix">
     <strong>No mnemes are stored in the database!</strong>
     <a href="#/new" type="button" class="btn btn-primary pull-right">
       Add a new mneme!
     </a>
   </div>
   <!-- show message if filtered mneme list is empty (but mnemes are present) -->
-  <div ng-show="mnemes.length && !mnemes_filtered.length"
+  <div ng-show="mnemedb.mnemes.length && !mnemes_filtered.length"
       class="alert alert-info">
     <strong>No mnemes match the current filter settings!</strong>
   </div>
