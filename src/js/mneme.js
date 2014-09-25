@@ -67,9 +67,6 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   $scope.filter_tags = sanitize_tags($routeParams.t);
 
   $scope.filter_tags_remaining = [];
-  $scope.filter_tags_add = function (tag) {
-    $scope.filter_tags.push(tag);
-  };
   $scope.filter_tags_remove = function (tag) {
     _.pull($scope.filter_tags, tag);
   };

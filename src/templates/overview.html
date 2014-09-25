@@ -51,7 +51,7 @@
           <div>
             <a href=""
                 ng-repeat="tag in filter_tags_remaining | orderBy: '-count'"
-                ng-click="filter_tags_add(tag.name)"
+                ng-click="filter_tags.push(tag.name)"
                 class="label label-info mneme-tag mneme-hover-base">
               <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
               <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
