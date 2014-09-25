@@ -142,6 +142,24 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
 mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
       $location, mnemedb) {
   $scope.tags = [];
+  $scope.tags_remove = function (tag) {
+    _.pull($scope.tags, tag);
+  };
+
+  // add a tag via textbox
+  $scope.tags_add = function () {
+    $scope.tags.push($scope.tag_new);
+    $scope.tag_new = "";
+  };
+  $scope.tag_new_validate = function () {
+    return !_.contains($scope.tags, $scope.tag_new) &&
+        $scope.tag_new && $scope.tag_new.length;
+  };
+
+  $scope.validate = function () {
+    return $scope.name && $scope.name.length;
+  };
+
   $scope.save = function () {
     var mneme = {
       type: 'mneme',

@@ -61,7 +61,7 @@
           </div>
         </div>
         <label ng-show="!filter_tags_remaining.length">
-          <span class="glyphicon glyphicon-tag mneme-filter-icon"></span>
+          <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
           There are no more tags for refining the filter!
         </label>
         <hr class="small">
@@ -82,6 +82,13 @@
       </div>
     </div>
   </div>
+
+  <p ng-show="mnemedb.mnemes.length">
+    <a href="#/new" class="btn btn-primary">
+      <span class="glyphicon glyphicon-plus"></span>
+      Add new mneme!
+    </a>
+  </p>
 
   <!-- filtererd mneme list -->
   <table ng-show="mnemes_filtered.length"
@@ -135,4 +142,11 @@
       class="alert alert-info">
     <strong>No mnemes match the current filter settings!</strong>
   </div>
+  <!-- show add button if list is long -->
+  <p ng-show="mnemedb.mnemes.length >= 8">
+    <a href="#/new" class="btn btn-primary">
+      <span class="glyphicon glyphicon-plus"></span>
+      Add new mneme!
+    </a>
+  </p>
 </div>
