@@ -186,18 +186,30 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
   $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
   $scope.$watchCollection('tags', tags_used_update);
 
+  $scope.$watchCollection('tags', function(tags) {
+    $location.search({
+      't': tags
+    });
+  });
+
   $scope.validate = function () {
     return $scope.name && $scope.name.length;
   };
 
   $scope.save = function () {
+    var timestamp = (new Date()).toISOString();
     var mneme = {
       type: 'mneme',
       name: $scope.name,
-      tags: $scope.tags
+      tags: $scope.tags,
+      ctime: date,
+      mtime: date
     };
     mnemedb.db.post(mneme).then(function () {
       $location.path('/overview');
     });
+  };
+  $scope.overview = function () {
+    $location.path('/overview');
   };
 });
