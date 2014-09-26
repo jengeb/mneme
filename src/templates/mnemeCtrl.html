@@ -1,0 +1,83 @@
+<div ng-controller="MnemeCtrl">
+  <!-- name -->
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="name">Name</label>
+      <input ng-model="mneme.name" type="text" class="form-control" id="name"
+        placeholder="Example: buy rice">
+    </div>
+  </div>
+
+  <hr class="small">
+
+  <!-- tags -->
+  <div class="form-group">
+    <label for="tags">
+      <span class="glyphicon glyphicon-tags"></span>
+      Tags
+    </label>
+    <a href ng-repeat="tag in mneme.tags" ng-click="tags_remove(tag)"
+        class="label label-primary mneme-tag mneme-hover-base">
+      <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+      <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+      {{tag}}
+    </a>
+    <small ng-show="!mneme.tags.length">
+      No tags have been specified yet.
+    </small>
+  </div>
+  <p>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input
+              ng-model="tag_new"
+              typeahead="tag.name for tag in tags_used | filter:$viewValue | limitTo:8"
+              ng-keydown="$event.keyCode == 13 && ($event.preventDefault() || tag_new_validate() && tags_add())"
+              placeholder="Example: shopping list"
+              type="text" class="form-control">
+          <span class="input-group-btn">
+            <button
+                ng-click="tags_add()"
+                ng-class="{disabled: !tag_new_validate()}"
+                class="btn btn-primary" type="button">
+              <span class="glyphicon glyphicon-tag"></span>
+              Add tag
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </p>
+  <div ng-show="tags_used.length">
+    <label>You can also pick the following often used tags:</label>
+    <div>
+      <a href=""
+          ng-repeat="tag in tags_used
+                     | orderBy: '-count'
+                     | limitTo: tags_used_limit"
+          ng-click="mneme.tags.push(tag.name)"
+          class="label label-info mneme-tag mneme-hover-base">
+        <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+        <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
+        {{tag.name}}
+        <span class="mneme-badge">{{tag.count}}</span>
+      </a>
+      <button
+          ng-init="tags_used_limit = 5"
+          ng-click="tags_used_limit = 10000"
+          ng-show="tags_used_limit == 5 &&
+                   tags_used.length > 5"
+          class="btn btn-primary btn-xs">
+        show all ({{tags_used.length - tags_used_limit}} more)
+      </button>
+      <button
+          ng-click="tags_used_limit = 5"
+          ng-show="tags_used_limit > 5 &&
+                   tags_used.length > 5"
+          class="btn btn-primary btn-xs">
+        show less
+      </button>
+    </div>
+  </div>
+</div>

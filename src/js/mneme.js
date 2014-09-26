@@ -68,6 +68,10 @@ mneme.config(function ($routeProvider) {
       templateUrl: 'templates/new.html',
       reloadOnSearch: false
     })
+    .when('/edit', {
+      templateUrl: 'templates/edit.html',
+      reloadOnSearch: false
+    })
     .otherwise({
       redirectTo: '/overview'
     });
@@ -79,7 +83,7 @@ function sanitize_tags (tags) {
   if (_.isString(tags)) {
     tags = [tags];
   }
-  return tags || [];
+  return _.clone(tags) || [];
 }
 
 // set up Overview controller
@@ -146,7 +150,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // update URL with filter parameters
   var update_url = function () {
     $location.search({
-      't': $scope.filter_tags
+      t: $scope.filter_tags
     });
   };
   $scope.$watchCollection('filter_tags', update_url);
@@ -155,26 +159,33 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   $scope.new = function () {
     $location.path('/new');
   };
+
+  // switch to edit page
+  $scope.edit = function (mneme) {
+    $location.search({
+      t: $scope.filter_tags,
+      id: mneme._id
+    });
+    $location.path('/edit');
+  };
 });
 
-mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
-      $location, mnemedb) {
+mneme.controller('MnemeCtrl', function ($scope, mnemedb) {
+  $scope.mneme = $scope.$parent.mneme;
   $scope.mnemedb = mnemedb;
-  $scope.mneme = {
-    type: 'mneme'
-  };
-  $scope.title = 'New mneme';
 
-  // get parameters from query part of URL via $routeParams
-  $scope.mneme.tags = sanitize_tags($routeParams.t);
+  // remove a tag
   $scope.tags_remove = function (tag) {
     _.pull($scope.mneme.tags, tag);
   };
+
   // add a tag via textbox
   $scope.tags_add = function () {
     $scope.mneme.tags.push($scope.tag_new);
     $scope.tag_new = "";
   };
+
+  // validate a new tag from the textbox
   $scope.tag_new_validate = function () {
     return !_.contains($scope.mneme.tags, $scope.tag_new) &&
         $scope.tag_new && $scope.tag_new.length;
@@ -198,11 +209,48 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
   };
   $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
   $scope.$watchCollection('mneme.tags', tags_used_update);
+});
 
-  $scope.$watchCollection('mneme.tags', function(tags) {
-    $location.search({
-      't': tags
+mneme.controller('NewCtrl', function ($scope, $routeParams,
+      $location, mnemedb) {
+
+  // the new mneme object
+  $scope.mneme = {
+    type: 'mneme',
+    // get parameters from query part of URL via $routeParams
+    tags: sanitize_tags($routeParams.t)
+  };
+
+  $scope.validate = function () {
+    return $scope.mneme.name && $scope.mneme.name.length;
+  };
+
+  $scope.save = function () {
+    var mneme = $scope.mneme;
+
+    // set timestamps
+    var timestamp = (new Date()).toISOString();
+    mneme.ctime = timestamp;
+    mneme.mtime = timestamp;
+
+    mnemedb.db.post(mneme).then(function () {
+      $scope.overview();
     });
+  };
+  $scope.overview = function () {
+    $location.search({
+      t: $routeParams.t
+    });
+    $location.path('/overview');
+  };
+});
+
+mneme.controller('EditCtrl', function ($scope, $routeParams,
+      $location, mnemedb) {
+  $scope.mnemedb = mnemedb;
+
+  mnemedb.db.get($routeParams.id).then(function (doc) {
+    $scope.mneme = doc;
   });
 
   $scope.validate = function () {
@@ -210,17 +258,20 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
   };
 
   $scope.save = function () {
+    // update mtime
     var timestamp = (new Date()).toISOString();
-    var mneme = $scope.mneme;
+    $scope.mneme.mtime = timestamp;
 
-    mneme.ctime = timestamp;
-    mneme.mtime = timestamp;
-
-    mnemedb.db.post(mneme).then(function () {
-      $location.path('/overview');
+    // store document
+    mnemedb.db.put($scope.mneme).then(function (result) {
+      $scope.overview();
     });
   };
+
   $scope.overview = function () {
+    $location.search({
+      t: $routeParams.t
+    });
     $location.path('/overview');
   };
 });

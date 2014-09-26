@@ -1,5 +1,6 @@
-<div ng-controller="NewCtrl">
-  <h2>Add a mneme</h2>
+<div ng-controller="EditCtrl">
+  <div ng-if="mneme">
+  <h2>Edit mneme <em>{{mneme.name}}</em></h2>
   <form role="form" ng-submit="validate() && save()">
     <ng-include src="'templates/mnemeCtrl.html'"></ng-include>
     <hr>
@@ -11,4 +12,5 @@
       Back to overview
     </a>
   </form>
+</div>
 </div>

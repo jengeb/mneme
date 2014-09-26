@@ -137,7 +137,9 @@
         </td>
         <td ng-if="filter_map">6 km</td>
         <td class="text-right">
-          <button type="button" class="btn btn-primary mneme-btn">
+          <button
+              ng-click="edit(mneme)"
+              type="button" class="btn btn-primary mneme-btn">
             <span class="glyphicon glyphicon-edit"></span> edit
           </button>
           <button
