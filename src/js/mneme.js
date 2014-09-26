@@ -93,6 +93,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   $scope.filter_tags = sanitize_tags($routeParams.t);
 
   $scope.filter_tags_remaining = [];
+  $scope.filter_tags_remaining_limit = 5;
   $scope.filter_tags_remove = function (tag) {
     _.pull($scope.filter_tags, tag);
   };
@@ -159,19 +160,23 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
 mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
       $location, mnemedb) {
   $scope.mnemedb = mnemedb;
+  $scope.mneme = {
+    type: 'mneme'
+  };
+  $scope.title = 'New mneme';
 
   // get parameters from query part of URL via $routeParams
-  $scope.tags = sanitize_tags($routeParams.t);
+  $scope.mneme.tags = sanitize_tags($routeParams.t);
   $scope.tags_remove = function (tag) {
-    _.pull($scope.tags, tag);
+    _.pull($scope.mneme.tags, tag);
   };
   // add a tag via textbox
   $scope.tags_add = function () {
-    $scope.tags.push($scope.tag_new);
+    $scope.mneme.tags.push($scope.tag_new);
     $scope.tag_new = "";
   };
   $scope.tag_new_validate = function () {
-    return !_.contains($scope.tags, $scope.tag_new) &&
+    return !_.contains($scope.mneme.tags, $scope.tag_new) &&
         $scope.tag_new && $scope.tag_new.length;
   };
 
@@ -184,7 +189,7 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
     var tags_counts = get_tags_counts(tags_all);
 
     // kick out the already selected tags
-    tags_counts = _.omit(tags_counts, $scope.tags);
+    tags_counts = _.omit(tags_counts, $scope.mneme.tags);
 
     // reorganize tags as array of objects
     $scope.tags_used = _.map(tags_counts, function (val, key) {
@@ -192,27 +197,25 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
     });
   };
   $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
-  $scope.$watchCollection('tags', tags_used_update);
+  $scope.$watchCollection('mneme.tags', tags_used_update);
 
-  $scope.$watchCollection('tags', function(tags) {
+  $scope.$watchCollection('mneme.tags', function(tags) {
     $location.search({
       't': tags
     });
   });
 
   $scope.validate = function () {
-    return $scope.name && $scope.name.length;
+    return $scope.mneme.name && $scope.mneme.name.length;
   };
 
   $scope.save = function () {
     var timestamp = (new Date()).toISOString();
-    var mneme = {
-      type: 'mneme',
-      name: $scope.name,
-      tags: $scope.tags,
-      ctime: timestamp,
-      mtime: timestamp
-    };
+    var mneme = $scope.mneme;
+
+    mneme.ctime = timestamp;
+    mneme.mtime = timestamp;
+
     mnemedb.db.post(mneme).then(function () {
       $location.path('/overview');
     });

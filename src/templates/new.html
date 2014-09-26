@@ -1,11 +1,11 @@
 <div ng-controller="NewCtrl">
-  <h2>New mneme</h2>
+  <h2>{{title}}</h2>
   <form role="form" ng-submit="validate() && save()">
     <!-- name -->
     <div class="row">
       <div class="form-group col-md-6">
         <label for="name">Name</label>
-        <input ng-model="name" type="text" class="form-control" id="name"
+        <input ng-model="mneme.name" type="text" class="form-control" id="name"
           placeholder="Example: buy rice">
       </div>
     </div>
@@ -18,13 +18,13 @@
         <span class="glyphicon glyphicon-tags"></span>
         Tags
       </label>
-      <a href ng-repeat="tag in tags" ng-click="tags_remove(tag)"
+      <a href ng-repeat="tag in mneme.tags" ng-click="tags_remove(tag)"
           class="label label-primary mneme-tag mneme-hover-base">
         <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
         <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
         {{tag}}
       </a>
-      <small ng-show="!tags.length">
+      <small ng-show="!mneme.tags.length">
         No tags have been specified yet.
       </small>
     </div>
@@ -55,14 +55,31 @@
       <label>You can also pick the following often used tags:</label>
       <div>
         <a href=""
-            ng-repeat="tag in tags_used | orderBy: '-count'"
-            ng-click="tags.push(tag.name)"
+            ng-repeat="tag in tags_used
+                       | orderBy: '-count'
+                       | limitTo: tags_used_limit"
+            ng-click="mneme.tags.push(tag.name)"
             class="label label-info mneme-tag mneme-hover-base">
           <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
           <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
           {{tag.name}}
           <span class="mneme-badge">{{tag.count}}</span>
         </a>
+        <button
+            ng-init="tags_used_limit = 5"
+            ng-click="tags_used_limit = 10000"
+            ng-show="tags_used_limit == 5 &&
+                     tags_used.length > 5"
+            class="btn btn-primary btn-xs">
+          show all ({{tags_used.length - tags_used_limit}} more)
+        </button>
+        <button
+            ng-click="tags_used_limit = 5"
+            ng-show="tags_used_limit > 5 &&
+                     tags_used.length > 5"
+            class="btn btn-primary btn-xs">
+          show less
+        </button>
       </div>
     </div>
 

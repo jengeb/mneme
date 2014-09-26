@@ -50,7 +50,9 @@
           </label>
           <div>
             <a href=""
-                ng-repeat="tag in filter_tags_remaining | orderBy: '-count'"
+                ng-repeat="tag in filter_tags_remaining |
+                           orderBy: '-count' |
+                           limitTo: filter_tags_remaining_limit"
                 ng-click="filter_tags.push(tag.name)"
                 class="label label-info mneme-tag mneme-hover-base">
               <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
@@ -58,6 +60,21 @@
               {{tag.name}}
               <span class="mneme-badge">{{tag.count}}</span>
             </a>
+            <button
+                ng-click="filter_tags_remaining_limit = 10000"
+                ng-show="filter_tags_remaining_limit == 5 &&
+                         filter_tags_remaining.length > 5"
+                class="btn btn-primary btn-xs">
+              show all ({{filter_tags_remaining.length -
+              filter_tags_remaining_limit}} more)
+            </button>
+            <button
+                ng-click="filter_tags_remaining_limit = 5"
+                ng-show="filter_tags_remaining_limit > 5 &&
+                         filter_tags_remaining.length > 5"
+                class="btn btn-primary btn-xs">
+              show less
+            </button>
           </div>
         </div>
         <label ng-show="!filter_tags_remaining.length">
