@@ -141,13 +141,19 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     });
   };
   $scope.$watchCollection('filter_tags', update_url);
+
+  // switch to new mneme page
+  $scope.new = function () {
+    $location.path('/new');
+  };
 });
 
 mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
       $location, mnemedb) {
   $scope.mnemedb = mnemedb;
 
-  $scope.tags = [];
+  // get parameters from query part of URL via $routeParams
+  $scope.tags = sanitize_tags($routeParams.t);
   $scope.tags_remove = function (tag) {
     _.pull($scope.tags, tag);
   };

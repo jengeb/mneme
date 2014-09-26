@@ -84,7 +84,7 @@
   </div>
 
   <p ng-show="mnemedb.mnemes.length">
-    <a href="#/new" class="btn btn-primary">
+    <a href ng-click="new()" class="btn btn-primary">
       <span class="glyphicon glyphicon-plus"></span>
       Add new mneme!
     </a>
@@ -117,7 +117,7 @@
         <td></td>
         <td>11 months ago</td>
         <td ng-if="filter_map">6 km</td>
-        <td>
+        <td class="text-right">
           <button type="button" class="btn btn-primary mneme-btn">
             <span class="glyphicon glyphicon-edit"></span> edit
           </button>
@@ -133,7 +133,7 @@
   <!-- show message if no mnemes are stored -->
   <div ng-show="!mnemedb.mnemes.length" class="alert alert-info clearfix">
     <strong>No mnemes are stored in the database!</strong>
-    <a href="#/new" type="button" class="btn btn-primary pull-right">
+    <a href ng-click="new()" type="button" class="btn btn-primary pull-right">
       Add a new mneme!
     </a>
   </div>
@@ -143,8 +143,8 @@
     <strong>No mnemes match the current filter settings!</strong>
   </div>
   <!-- show add button if list is long -->
-  <p ng-show="mnemedb.mnemes.length >= 8">
-    <a href="#/new" class="btn btn-primary">
+  <p ng-show="mnemes_filtered.length >= 7">
+    <a href ng-click="new()" class="btn btn-primary">
       <span class="glyphicon glyphicon-plus"></span>
       Add new mneme!
     </a>
