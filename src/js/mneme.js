@@ -1,9 +1,12 @@
 // set up angular
-var mneme = angular.module('mneme', ['ngRoute', 'ui.bootstrap', 'pouchdb']);
+var mneme = angular.module(
+  'mneme',
+  ['ngRoute', 'ui.bootstrap', 'pouchdb', 'angularMoment']
+);
 
 // set up the pouchdb database
 mneme.factory('mnemedb', function (pouchdb) {
-  mnemedb = {
+  var mnemedb = {
     db: pouchdb.create('mnemedb'),
     // the result of queries end up in the following properties
     // (as long as they are undefined, the initial query of the database is
@@ -24,7 +27,12 @@ mneme.factory('mnemedb', function (pouchdb) {
       },
       {include_docs: true}
     ).then(function (data) {
-      mnemedb.mnemes = _.pluck(data.rows, 'doc');
+      var mnemes = _.pluck(data.rows, 'doc');
+      _.forEach(mnemes, function (mneme) {
+        mneme.ctime = new Date(mneme.ctime);
+        mneme.mtime = new Date(mneme.mtime);
+      });
+      mnemedb.mnemes = mnemes;
     });
   });
 
@@ -202,8 +210,8 @@ mneme.controller('NewCtrl', function ($scope, $timeout, $routeParams,
       type: 'mneme',
       name: $scope.name,
       tags: $scope.tags,
-      ctime: date,
-      mtime: date
+      ctime: timestamp,
+      mtime: timestamp
     };
     mnemedb.db.post(mneme).then(function () {
       $location.path('/overview');
