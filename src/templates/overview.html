@@ -1,173 +1,175 @@
 <div ng-controller="OverviewCtrl">
-  <!-- filter panel -->
-  <div class="panel panel-info mneme-panel-filter">
-    <!-- filter panel heading -->
-    <div ng-click="filter_show = !filter_show"
-        class="panel-heading mneme-pointer clearfix">
-      <span class="glyphicon glyphicon-filter"></span> Filter
-      <!-- arrow pointing down or up -->
-      <span ng-show="!filter_show" class="caret"></span>
-      <span ng-show="filter_show" class="dropup">
-        <span class="caret"></span>
-      </span>
+  <div class="mneme-content">
+    <!-- filter panel -->
+    <div ng-show="mnemedb.mnemes.length" class="panel panel-info">
+      <!-- filter panel heading -->
+      <div ng-click="filter_show = !filter_show"
+          class="panel-heading mneme-pointer clearfix">
+        <span class="glyphicon glyphicon-filter"></span> Filter
+        <!-- arrow pointing down or up -->
+        <span ng-show="!filter_show" class="caret"></span>
+        <span ng-show="filter_show" class="dropup">
+          <span class="caret"></span>
+        </span>
 
-      <!-- list of selected filter tags (stop click event propagation to
-           preven the panel from closing) -->
-      <a href=""
-          ng-repeat="tag in filter_tags"
-          ng-click="filter_tags_remove(tag); $event.stopPropagation();"
-          class="label label-primary mneme-tag mneme-hover-base">
-        <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-        <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
-        {{tag}}
-      </a>
+        <!-- list of selected filter tags (stop click event propagation to
+             preven the panel from closing) -->
+        <a href=""
+            ng-repeat="tag in filter_tags"
+            ng-click="filter_tags_remove(tag); $event.stopPropagation();"
+            class="label label-primary mneme-tag mneme-hover-base">
+          <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+          <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+          {{tag}}
+        </a>
 
-      <!-- show map restriction label -->
-      <a href=""
-          ng-click="filter_map = false; $event.stopPropagation();"
-          ng-show="filter_map"
-          class="label label-default mneme-tag mneme-hover-base">
-        <span class="glyphicon glyphicon-globe mneme-hover-hide"></span>
-        <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
-        map area
-      </a>
+        <!-- show map restriction label -->
+        <a href=""
+            ng-click="filter_map = false; $event.stopPropagation();"
+            ng-show="filter_map"
+            class="label label-default mneme-tag mneme-hover-base">
+          <span class="glyphicon glyphicon-globe mneme-hover-hide"></span>
+          <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+          map area
+        </a>
 
-      <!-- clear filter button -->
-      <button
-          ng-click="filter_tags = []; filter_map = false; $event.stopPropagation();"
-          ng-show="filter_tags.length || filter_map"
-          class="btn btn-danger btn-xs pull-right mneme-filter-clear">
-        <span class="glyphicon glyphicon-remove"></span> clear
-      </button>
-    </div>
-    <!-- filter panel body -->
-    <div collapse="!filter_show">
-      <div class="panel-body">
-        <div ng-show="filter_tags_remaining.length">
-          <label>
-            <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
-            Pick one or more of the following tags to filter your mnemes!
-          </label>
-          <div>
-            <a href=""
-                ng-repeat="tag in filter_tags_remaining |
-                           orderBy: '-count' |
-                           limitTo: filter_tags_remaining_limit"
-                ng-click="filter_tags.push(tag.name)"
-                class="label label-info mneme-tag mneme-hover-base">
-              <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-              <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
-              {{tag.name}}
-              <span class="mneme-badge">{{tag.count}}</span>
-            </a>
-            <button
-                ng-click="filter_tags_remaining_limit = 10000"
-                ng-show="filter_tags_remaining_limit == 5 &&
-                         filter_tags_remaining.length > 5"
-                class="btn btn-primary btn-xs">
-              show all ({{filter_tags_remaining.length -
-              filter_tags_remaining_limit}} more)
-            </button>
-            <button
-                ng-click="filter_tags_remaining_limit = 5"
-                ng-show="filter_tags_remaining_limit > 5 &&
-                         filter_tags_remaining.length > 5"
-                class="btn btn-primary btn-xs">
-              show less
-            </button>
+        <!-- clear filter button -->
+        <button
+            ng-click="filter_tags = []; filter_map = false; $event.stopPropagation();"
+            ng-show="filter_tags.length || filter_map"
+            class="btn btn-danger btn-xs pull-right mneme-filter-clear">
+          <span class="glyphicon glyphicon-remove"></span> clear
+        </button>
+      </div>
+      <!-- filter panel body -->
+      <div collapse="!filter_show">
+        <div class="panel-body">
+          <div ng-show="filter_tags_remaining.length">
+            <label>
+              <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+              Pick one or more of the following tags to filter your mnemes!
+            </label>
+            <div>
+              <a href=""
+                  ng-repeat="tag in filter_tags_remaining |
+                             orderBy: '-count' |
+                             limitTo: filter_tags_remaining_limit"
+                  ng-click="filter_tags.push(tag.name)"
+                  class="label label-info mneme-tag mneme-hover-base">
+                <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
+                <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
+                {{tag.name}}
+                <span class="mneme-badge">{{tag.count}}</span>
+              </a>
+              <button
+                  ng-click="filter_tags_remaining_limit = 10000"
+                  ng-show="filter_tags_remaining_limit == 5 &&
+                           filter_tags_remaining.length > 5"
+                  class="btn btn-primary btn-xs">
+                show all ({{filter_tags_remaining.length -
+                filter_tags_remaining_limit}} more)
+              </button>
+              <button
+                  ng-click="filter_tags_remaining_limit = 5"
+                  ng-show="filter_tags_remaining_limit > 5 &&
+                           filter_tags_remaining.length > 5"
+                  class="btn btn-primary btn-xs">
+                show less
+              </button>
+            </div>
           </div>
-        </div>
-        <label ng-show="!filter_tags_remaining.length">
-          <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
-          There are no more tags for refining the filter!
-        </label>
-        <hr class="small">
-        <!-- TODO: map filter -->
-        <div>
-          <label>
-            <button
-                ng-model="filter_map" btn-checkbox
-                type="button" class="btn btn-default btn-xs">
-              <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
-              Restrict to area on map
-            </button>
+          <label ng-show="!filter_tags_remaining.length">
+            <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+            There are no more tags for refining the filter!
           </label>
-          <div collapse="!filter_map">
-            <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;"></div>
+          <hr class="small">
+          <!-- TODO: map filter -->
+          <div>
+            <label>
+              <button
+                  ng-model="filter_map" btn-checkbox
+                  type="button" class="btn btn-default btn-xs">
+                <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+                Restrict to area on map
+              </button>
+            </label>
+            <div collapse="!filter_map">
+              <div style="height: 300px; padding-left: 20px; padding-right: 20px; background-color: #DDDDDD;"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <p ng-show="mnemedb.mnemes.length">
-    <a href ng-click="new()" class="btn btn-primary">
-      <span class="glyphicon glyphicon-plus"></span>
-      Add new mneme!
-    </a>
-  </p>
+    <p ng-show="mnemedb.mnemes.length">
+      <a href ng-click="new()" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus"></span>
+        Add new mneme!
+      </a>
+    </p>
 
-  <!-- filtererd mneme list -->
-  <table ng-show="mnemes_filtered.length"
-      class="table table-striped table-hover table-vmiddle">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Deadline</th>
-        <th>Creation date</th>
-        <th ng-if="filter_map">Distance from map center</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="mneme in mnemes_filtered | orderBy: '+name'">
-        <td>
-          <h4>{{mneme.name}}</h4>
-          <span ng-repeat="tag in mneme.tags">
-            <span ng-if="!filter_tags_contains(tag)"
-                class="mneme-tag label label-info">
-              <span class="glyphicon glyphicon-tag"></span>
-              {{tag}}
+    <!-- filtererd mneme list -->
+    <table ng-show="mnemes_filtered.length"
+        class="table table-striped table-hover table-vmiddle">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Deadline</th>
+          <th>Creation date</th>
+          <th ng-if="filter_map">Distance from map center</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="mneme in mnemes_filtered | orderBy: '+name'">
+          <td>
+            <h4>{{mneme.name}}</h4>
+            <span ng-repeat="tag in mneme.tags">
+              <span ng-if="!filter_tags_contains(tag)"
+                  class="mneme-tag label label-info">
+                <span class="glyphicon glyphicon-tag"></span>
+                {{tag}}
+              </span>
             </span>
-          </span>
-        </td>
-        <td></td>
-        <td>
-          <span am-time-ago="mneme.ctime"></span>
-        </td>
-        <td ng-if="filter_map">6 km</td>
-        <td class="text-right">
-          <button
-              ng-click="edit(mneme)"
-              type="button" class="btn btn-primary mneme-btn">
-            <span class="glyphicon glyphicon-edit"></span> edit
-          </button>
-          <button
-              ng-click="mnemedb.db.remove(mneme._id, mneme._rev)"
-              type="button" class="btn btn-danger mneme-btn">
-            <span class="glyphicon glyphicon-remove"></span> remove
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <!-- show message if no mnemes are stored -->
-  <div ng-show="!mnemedb.mnemes.length" class="alert alert-info clearfix">
-    <strong>No mnemes are stored in the database!</strong>
-    <a href ng-click="new()" type="button" class="btn btn-primary pull-right">
-      Add a new mneme!
-    </a>
+          </td>
+          <td></td>
+          <td>
+            <span am-time-ago="mneme.ctime"></span>
+          </td>
+          <td ng-if="filter_map">6 km</td>
+          <td class="text-right">
+            <button
+                ng-click="edit(mneme)"
+                type="button" class="btn btn-primary mneme-btn">
+              <span class="glyphicon glyphicon-edit"></span> edit
+            </button>
+            <button
+                ng-click="mnemedb.db.remove(mneme._id, mneme._rev)"
+                type="button" class="btn btn-danger mneme-btn">
+              <span class="glyphicon glyphicon-remove"></span> remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- show message if no mnemes are stored -->
+    <div ng-show="!mnemedb.mnemes.length" class="alert alert-info clearfix">
+      <strong>No mnemes are stored in the database!</strong>
+      <a href ng-click="new()" type="button" class="btn btn-primary pull-right">
+        Add a new mneme!
+      </a>
+    </div>
+    <!-- show message if filtered mneme list is empty (but mnemes are present) -->
+    <div ng-show="mnemedb.mnemes.length && !mnemes_filtered.length"
+        class="alert alert-info">
+      <strong>No mnemes match the current filter settings!</strong>
+    </div>
+    <!-- show add button if list is long -->
+    <p ng-show="mnemes_filtered.length >= 7">
+      <a href ng-click="new()" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus"></span>
+        Add new mneme!
+      </a>
+    </p>
   </div>
-  <!-- show message if filtered mneme list is empty (but mnemes are present) -->
-  <div ng-show="mnemedb.mnemes.length && !mnemes_filtered.length"
-      class="alert alert-info">
-    <strong>No mnemes match the current filter settings!</strong>
-  </div>
-  <!-- show add button if list is long -->
-  <p ng-show="mnemes_filtered.length >= 7">
-    <a href ng-click="new()" class="btn btn-primary">
-      <span class="glyphicon glyphicon-plus"></span>
-      Add new mneme!
-    </a>
-  </p>
 </div>
