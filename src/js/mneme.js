@@ -209,6 +209,10 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb) {
   };
   $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
   $scope.$watchCollection('mneme.tags', tags_used_update);
+
+  // date picker
+  $scope.dateOptions = {
+  };
 });
 
 mneme.controller('NewCtrl', function ($scope, $routeParams,

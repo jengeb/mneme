@@ -1,6 +1,6 @@
 <div ng-controller="NewCtrl">
   <h2>Add a mneme</h2>
-  <form role="form" ng-submit="validate() && save()">
+  <form role="form" ng-submit="validate() && save()" class="form-horizontal">
     <ng-include src="'templates/mnemeCtrl.html'"></ng-include>
     <hr>
     <button ng-class="{disabled: !validate()}"
