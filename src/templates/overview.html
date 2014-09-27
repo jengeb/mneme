@@ -113,15 +113,34 @@
         class="table table-striped table-hover table-vmiddle">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Deadline</th>
-          <th>Creation date</th>
+          <th>
+            Name
+            <a href="" ng-click="order_field = 'name';
+                                 order_reverse = !order_reverse">
+              <span class="glyphicon glyphicon-sort"></span>
+            </a>
+          </th>
+          <th>
+            Deadline
+            <a href="" ng-click="order_field = 'deadline';
+                                 order_reverse = !order_reverse">
+              <span class="glyphicon glyphicon-sort"></span>
+            </a>
+          </th>
+          <th>
+            Creation date
+            <a href="" ng-click="order_field = 'ctime';
+                                 order_reverse = !order_reverse">
+              <span class="glyphicon glyphicon-sort"></span>
+            </a>
+          </th>
           <th ng-if="filter_map">Distance from map center</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="mneme in mnemes_filtered | orderBy: '+name'">
+        <tr ng-repeat="mneme in mnemes_filtered
+                       | orderBy:order_field:order_reverse">
           <td>
             <h4>{{mneme.name}}</h4>
             <span ng-repeat="tag in mneme.tags">
