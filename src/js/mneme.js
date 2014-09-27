@@ -210,8 +210,17 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb) {
   $scope.$watchCollection('mnemedb.mnemes', tags_used_update);
   $scope.$watchCollection('mneme.tags', tags_used_update);
 
-  // date picker
-  $scope.dateOptions = {
+  // deadline checkbox
+  $scope.$watchCollection('mneme.deadline', function (deadline) {
+    $scope.deadline_show = deadline !== undefined;
+  });
+  $scope.deadline_toggle = function (show) {
+    $scope.mneme.deadline = show ? new Date() : undefined;
+  };
+
+  // datepicker options
+  $scope.deadline_date_options = {
+    startingDay: 1
   };
 });
 
@@ -236,6 +245,11 @@ mneme.controller('NewCtrl', function ($scope, $routeParams,
     var timestamp = (new Date()).toISOString();
     mneme.ctime = timestamp;
     mneme.mtime = timestamp;
+
+    // set deadline
+    if ($scope.mneme.deadline) {
+      $scope.mneme.deadline = $scope.mneme.deadline.toISOString();
+    }
 
     mnemedb.db.post(mneme).then(function () {
       $scope.overview();
@@ -265,6 +279,11 @@ mneme.controller('EditCtrl', function ($scope, $routeParams,
     // update mtime
     var timestamp = (new Date()).toISOString();
     $scope.mneme.mtime = timestamp;
+
+    // set deadline
+    if ($scope.mneme.deadline) {
+      $scope.mneme.deadline = $scope.mneme.deadline.toISOString();
+    }
 
     // store document
     mnemedb.db.put($scope.mneme).then(function (result) {

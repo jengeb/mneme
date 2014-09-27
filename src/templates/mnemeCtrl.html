@@ -5,8 +5,8 @@
       Name
       <span class="glyphicon glyphicon-pencil mneme-margin-left"></span>
     </label>
-    <div class="col-md-6">
-      <input ng-model="mneme.name" type="text" class="form-control col-md-6"
+    <div class="col-md-5">
+      <input ng-model="mneme.name" type="text" class="form-control"
           id="name" placeholder="Example: buy rice">
     </div>
   </div>
@@ -17,7 +17,7 @@
       Tags
       <span class="glyphicon glyphicon-tags mneme-margin-left"></span>
     </label>
-    <div class="col-md-6 mneme-margin-top">
+    <div class="col-md-5 mneme-margin-top">
       <!-- list of selected tags -->
       <p>
         <a href ng-repeat="tag in mneme.tags" ng-click="tags_remove(tag)"
@@ -84,27 +84,25 @@
   </div>
 
   <!-- deadline -->
-  <!--div class="form-group">
+  <div class="form-group">
     <label for="deadline" class="control-label col-md-2">
       Deadline
       <span class="glyphicon glyphicon-time mneme-margin-left"></span>
     </label>
-    <div class="col-md-6">
+    <div class="col-md-5">
       <div class="row">
         <div class="col-xs-1 mneme-margin-top">
-          <input type="checkbox"
-              ng-model="mneme.deadline"
-              ng-true-value="new Date()"
-              ng-false-value="undefined"
-              >
+          <input type="checkbox" ng-model="deadline_show"
+              ng-change="deadline_toggle(deadline_show)">
         </div>
-        <div ng-show="mneme.deadline" class="col-xs-11">
+        <!-- date -->
+        <div ng-show="deadline_show" class="col-xs-5">
           <div class="input-group">
             <input type="text" class="form-control"
                 datepicker-popup="yyyy/MM/dd"
+                datepicker-options="deadline_date_options"
                 ng-model="mneme.deadline"
                 is-open="deadline_popup"
-                ng-required="true"
                 close-text="Close" />
             <span class="input-group-btn">
               <button type="button"
@@ -116,7 +114,23 @@
             </span>
           </div>
         </div>
+        <!-- time -->
+        <div ng-show="deadline_show" class="col-xs-5 mneme-timepicker">
+          <timepicker ng-model="mneme.deadline" minute-step="15"
+              show-meridian="false"></timepicker>
+        </div>
       </div>
     </div>
-  </div-->
+  </div>
+
+  <!-- location -->
+  <div class="form-group">
+    <label for="location" class="control-label col-md-2">
+      Location
+      <span class="glyphicon glyphicon-map-marker mneme-margin-left"></span>
+    </label>
+    <div class="col-md-6 mneme-margin-top">
+      Todo!
+    </div>
+  </div>
 </div>

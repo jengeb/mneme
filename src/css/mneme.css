@@ -70,3 +70,7 @@ hr.small {
 .mneme-filter-clear {
   margin: 0.1em;
 }
+
+.mneme-timepicker tr:nth-child(odd) {
+  display: none;
+}
