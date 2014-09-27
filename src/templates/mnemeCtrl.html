@@ -63,7 +63,7 @@
             {{tag.name}}
             <span class="mneme-badge">{{tag.count}}</span>
           </a>
-          <button
+          <button type="button"
               ng-init="tags_used_limit = 5"
               ng-click="tags_used_limit = 10000"
               ng-show="tags_used_limit == 5 &&
@@ -71,7 +71,7 @@
               class="btn btn-primary btn-xs">
             show all ({{tags_used.length - tags_used_limit}} more)
           </button>
-          <button
+          <button type="button"
               ng-click="tags_used_limit = 5"
               ng-show="tags_used_limit > 5 &&
                        tags_used.length > 5"
@@ -107,10 +107,10 @@
                 ng-required="true"
                 close-text="Close" />
             <span class="input-group-btn">
-              <button
+              <button type="button"
                   ng-click="deadline_popup = !deadline_popup;
                             $event.stopPropagation();"
-                  type="button" class="btn btn-primary">
+                  class="btn btn-primary">
                 <span class="glyphicon glyphicon-calendar"></span>
               </button>
             </span>
