@@ -93,7 +93,7 @@
       <div class="row">
         <div class="col-xs-1 mneme-margin-top">
           <input type="checkbox" ng-model="deadline_show"
-              ng-change="deadline_toggle(deadline_show)">
+              ng-change="deadline_toggle(deadline_show)" id="deadline">
         </div>
         <!-- date -->
         <div ng-show="deadline_show" class="col-xs-5">
@@ -129,8 +129,19 @@
       Location
       <span class="glyphicon glyphicon-map-marker mneme-margin-left"></span>
     </label>
-    <div class="col-md-6 mneme-margin-top">
-      Todo!
+    <div class="col-md-5">
+      <div class="mneme-margin-top">
+          <input type="checkbox" ng-model="location_show"
+              ng-change="location_toggle(location_show)" id="location">
+      </div>
+      <div collapse="!location_markers.mneme">
+        <leaflet
+            center="location_center"
+            markers="location_markers"
+            class="mneme-leaflet-map"
+            >
+        </leaflet>
+      </div>
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 // set up angular
 var mneme = angular.module(
   'mneme',
-  ['ngRoute', 'ui.bootstrap', 'pouchdb', 'angularMoment']
+  ['ngRoute', 'ui.bootstrap', 'pouchdb', 'angularMoment', 'leaflet-directive']
 );
 
 // set up the pouchdb database
@@ -170,7 +170,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   };
 });
 
-mneme.controller('MnemeCtrl', function ($scope, mnemedb) {
+mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData) {
   $scope.mneme = $scope.$parent.mneme;
   $scope.mnemedb = mnemedb;
 
@@ -222,6 +222,63 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb) {
   $scope.deadline_date_options = {
     startingDay: 1
   };
+
+  // location checkbox handler
+  $scope.location_markers = {};
+  $scope.location_toggle = function (show) {
+    if (show) {
+      $scope.location_markers.mneme = {
+        lat: $scope.location_center.lat,
+        lng: $scope.location_center.lng,
+        draggable: true
+      };
+    } else {
+      delete $scope.location_markers['mneme'];
+    }
+  };
+
+  // invalidate size after show/hide
+  $scope.$watch('location_show', function(show) {
+    if (show) {
+      leafletData.getMap().then(function (map) {
+        map.invalidateSize();
+      });
+    }
+  });
+  
+  // TODO: center of map
+  $scope.location_center = {
+    lat: 15,
+    lng: 17,
+    zoom: 1
+  };
+
+  $scope.$watchCollection('mneme.location', function (location) {
+    $scope.location_show = location !== undefined;
+    if (location) {
+      // set center
+      $scope.location_center = {
+        lat: location.lat,
+        lng: location.lng,
+        zoom: $scope.location_center && $scope.location_markers.mneme ?
+            $scope.location_center.zoom : 13
+      };
+      // set marker
+      if (!$scope.location_markers.mneme) {
+        $scope.location_markers.mneme = {
+          lat: location.lat,
+          lng: location.lng,
+          draggable: true
+        };
+      }
+    }
+  });
+  $scope.$watchCollection('location_markers.mneme', function (mneme_marker) {
+    $scope.mneme.location = mneme_marker ? {
+      lat: mneme_marker.lat,
+      lng: mneme_marker.lng
+    } : undefined;
+  });
 });
 
 mneme.controller('NewCtrl', function ($scope, $routeParams,
