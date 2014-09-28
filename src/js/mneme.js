@@ -170,7 +170,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   };
 });
 
-mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData) {
+mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) {
   $scope.mneme = $scope.$parent.mneme;
   $scope.mnemedb = mnemedb;
 
@@ -225,7 +225,7 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData) {
 
   // location checkbox handler
   $scope.location_markers = {};
-  $scope.location_toggle = function (show) {
+  /*$scope.location_toggle = function (show) {
     if (show) {
       $scope.location_markers.mneme = {
         lat: $scope.location_center.lat,
@@ -235,7 +235,58 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData) {
     } else {
       delete $scope.location_markers['mneme'];
     }
+  };*/
+
+  var location = $scope.mneme.location;
+  $scope.location_show = location !== undefined;
+
+  if (location) {
+    // set center
+    $scope.location_center = {
+      lat: location.lat,
+      lng: location.lng,
+      zoom: $scope.location_center && $scope.location_markers.mneme ?
+          $scope.location_center.zoom : 13
+    };
+
+    // set marker
+    $scope.location_markers.mneme = {
+      lat: location.lat,
+      lng: location.lng,
+      draggable: true
+    };
+  } else {
+    // default center
+    $scope.location_center = {
+      lat: 15,
+      lng: 17,
+      zoom: 1
+    };
+    // default marker
+    $scope.location_markers.mneme = {
+      lat: 15,
+      lng: 17,
+      draggable: true
+    };
+  }
+
+  // update center and update mneme property
+  var location_update = function () {
+    var loc = $scope.location_markers.mneme;
+    // set center
+    _.extend($scope.location_center, {
+      lat: loc.lat,
+      lng: loc.lng
+    });
+
+    // set mneme property
+    $scope.mneme.location = $scope.location_show ? {
+      lat: loc.lat,
+      lng: loc.lng
+    } : undefined;
   };
+  $scope.$watch('location_show', location_update);
+  $scope.$watchCollection('location_markers.mneme', location_update);
 
   // invalidate size after show/hide
   $scope.$watch('location_show', function(show) {
@@ -245,40 +296,42 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData) {
       });
     }
   });
-  
-  // TODO: center of map
-  $scope.location_center = {
-    lat: 15,
-    lng: 17,
-    zoom: 1
-  };
 
-  $scope.$watchCollection('mneme.location', function (location) {
-    $scope.location_show = location !== undefined;
-    if (location) {
-      // set center
-      $scope.location_center = {
-        lat: location.lat,
-        lng: location.lng,
-        zoom: $scope.location_center && $scope.location_markers.mneme ?
-            $scope.location_center.zoom : 13
+  // get location
+  $scope.$on('leafletDirectiveMap.locationfound', function (event, args) {
+    $timeout(function () {
+      $scope.location_get_status = {
+        code: 'success',
+        text: 'Location found!'
       };
-      // set marker
-      if (!$scope.location_markers.mneme) {
-        $scope.location_markers.mneme = {
-          lat: location.lat,
-          lng: location.lng,
-          draggable: true
-        };
-      }
-    }
+      var latlng = args.leafletEvent.latlng;
+
+      $scope.location_markers.mneme = {
+        lat: latlng.lat,
+        lng: latlng.lng,
+        draggable: true
+      };
+    });
   });
-  $scope.$watchCollection('location_markers.mneme', function (mneme_marker) {
-    $scope.mneme.location = mneme_marker ? {
-      lat: mneme_marker.lat,
-      lng: mneme_marker.lng
-    } : undefined;
+  $scope.$on('leafletDirectiveMap.locationerror', function (event) {
+    $scope.location_get_status = {
+      code: 'fail',
+      text: 'Location could not be determined!'
+    };
   });
+  $scope.location_get = function () {
+    $scope.location_get_status = {
+      code: 'active',
+      text: 'Obtaining location...'
+    };
+    leafletData.getMap().then(function (map) {
+      map.locate({
+        timeout: 20000,
+        maximumAge: 60000,
+        enableHighAccuracy: true
+      });
+    });
+  };
 });
 
 mneme.controller('NewCtrl', function ($scope, $routeParams,

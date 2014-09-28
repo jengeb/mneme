@@ -130,11 +130,30 @@
       <span class="glyphicon glyphicon-map-marker mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
-      <div class="mneme-margin-top">
-          <input type="checkbox" ng-model="location_show"
-              ng-change="location_toggle(location_show)" id="location">
+      <div class="row">
+        <div class="col-xs-1 mneme-margin-top">
+          <input type="checkbox" ng-model="location_show" id="location">
+        </div>
+        <div class="col-xs-11">
+          <div collapse="!location_show">
+            <button ng-click="location_get()"
+                type="button" class="btn btn-primary"
+                ng-class="{disabled: location_get_status.code == 'active'}">
+              <span class="glyphicon glyphicon-map-marker"></span>
+              Get my location
+            </button>
+            <span class="mneme-margin-left"
+              ng-class="{
+                'text-primary': location_get_status.code == 'active',
+                'text-success': location_get_status.code == 'success',
+                'text-danger': location_get_status.code == 'fail'
+              }">
+              {{location_get_status.text}}
+            </span>
+          </div>
+        </div>
       </div>
-      <div collapse="!location_markers.mneme">
+      <div collapse="!location_show" class="mneme-margin-top">
         <leaflet
             center="location_center"
             markers="location_markers"
