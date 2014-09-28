@@ -315,13 +315,21 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
       };
 
       // add accuracy circle
+      var radius = args.leafletEvent.accuracy; // in meter
       $scope.location_paths = [{
         type: 'circle',
-        radius: args.leafletEvent.accuracy,
+        radius: radius,
         latlngs: {lat: latlng.lat, lng: latlng.lng}
       }];
-      
-      $scope.location_center.zoom = 14;
+
+      // determine bounding box
+      var deg = L.LatLng.RAD_TO_DEG * radius / 6371000;
+      leafletData.getMap().then(function (map) {
+        map.fitBounds([
+          [latlng.lat - deg, latlng.lng - deg],
+          [latlng.lat + deg, latlng.lng + deg]
+        ]);
+      });
     });
   });
   $scope.$on('leafletDirectiveMap.locationerror', function (event) {
