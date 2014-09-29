@@ -95,7 +95,15 @@
               </button>
             </label>
             <div collapse="!filter_map">
-              <leaflet style="height: 300px; padding-left: 20; padding-right: 20px;"></leaflet>
+              <leaflet
+                  center="location_center"
+                  markers="location_markers"
+                  paths="location_paths"
+                  event-broadcast="location_events"
+                  bounds="location_bounds"
+                  class="mneme-leaflet-map"
+                  >
+              </leaflet>
             </div>
           </div>
         </div>

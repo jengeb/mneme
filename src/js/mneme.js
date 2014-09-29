@@ -88,7 +88,7 @@ function sanitize_tags (tags) {
 
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
-    $location, mnemedb) {
+    $location, mnemedb, leafletData) {
 
   // store mnemedb on scope in order to allow deletions
   $scope.mnemedb = mnemedb;
@@ -134,6 +134,33 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   };
   $scope.$watchCollection('filter_tags', filter_tags_remaining_update);
   $scope.$watchCollection('mnemedb.mnemes', filter_tags_remaining_update);
+
+  // invalidate size after show/hide
+  $scope.$watch('filter_map', function(show) {
+    if (show) {
+      leafletData.getMap().then(function (map) {
+        map.invalidateSize();
+        map.fitBounds(L.latLngBounds($scope.location_markers).pad(0.1));
+      });
+    }
+  });
+
+  // set map center
+  $scope.location_center = {
+    lat: 15,
+    lng: 17,
+    zoom: 1
+  };
+
+  // set map markers to current selection
+  $scope.$watchCollection('mnemes_filtered', function (mnemes) {
+    $scope.location_markers = _.compact(_.map(mnemes, function (mneme) {
+      return mneme.location ? {
+        lat: mneme.location.lat,
+        lng: mneme.location.lng
+      } : false;
+    }));
+  });
 
   // update 'mnemes_filtered' to match the tag filter
   var mnemes_filtered_update = function () {
