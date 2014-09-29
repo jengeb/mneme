@@ -297,39 +297,45 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
     }
   });
 
+  // enable event broadcasts
+  $scope.location_events = {
+    map: {
+      enable: ['click', 'locationfound', 'locationerror'],
+      logic: 'emit'
+    }
+  };
+
   // get location
   $scope.location_paths = {};
   $scope.$on('leafletDirectiveMap.locationfound', function (event, args) {
-    $timeout(function () {
-      $scope.location_get_status = {
-        code: 'success',
-        text: 'Location found!'
-      };
-      var latlng = args.leafletEvent.latlng;
-      
-      // update marker
-      $scope.location_markers.mneme = {
-        lat: latlng.lat,
-        lng: latlng.lng,
-        draggable: true
-      };
+    $scope.location_get_status = {
+      code: 'success',
+      text: 'Location found!'
+    };
 
-      // add accuracy circle
-      var radius = args.leafletEvent.accuracy; // in meter
-      $scope.location_paths = [{
-        type: 'circle',
-        radius: radius,
-        latlngs: {lat: latlng.lat, lng: latlng.lng}
-      }];
+    // update marker
+    var latlng = args.leafletEvent.latlng;
+    _.extend($scope.location_markers.mneme, {
+      lat: latlng.lat,
+      lng: latlng.lng,
+    });
 
-      // determine bounding box
-      var deg = L.LatLng.RAD_TO_DEG * radius / 6371000;
-      leafletData.getMap().then(function (map) {
-        map.fitBounds([
-          [latlng.lat - deg, latlng.lng - deg],
-          [latlng.lat + deg, latlng.lng + deg]
-        ]);
-      });
+    // add accuracy circle
+    var radius = args.leafletEvent.accuracy; // in meter
+    $scope.location_paths = [{
+      type: 'circle',
+      radius: radius,
+      latlngs: {lat: latlng.lat, lng: latlng.lng},
+      clickable: false
+    }];
+
+    // determine bounding box
+    var deg = L.LatLng.RAD_TO_DEG * radius / 6371000;
+    leafletData.getMap().then(function (map) {
+      map.fitBounds([
+        [latlng.lat - deg, latlng.lng - deg],
+        [latlng.lat + deg, latlng.lng + deg]
+      ]);
     });
   });
   $scope.$on('leafletDirectiveMap.locationerror', function (event) {
@@ -337,9 +343,6 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
       code: 'fail',
       text: 'Location could not be determined!'
     };
-  });
-  $scope.$on('leafletDirectiveMarker.dragend', function () {
-    $scope.location_paths = [];
   });
   $scope.location_get = function () {
     $scope.location_get_status = {
@@ -354,12 +357,14 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
       });
     });
   };
-  $scope.location_events = {
-    markers: {
-      enable: ['dragend'],
-      logic: 'emit'
-    }
-  };
+  $scope.$on('leafletDirectiveMap.click', function(event, args) {
+    // update marker
+    var latlng = args.leafletEvent.latlng;
+    _.extend($scope.location_markers.mneme, {
+      lat: latlng.lat,
+      lng: latlng.lng,
+    });
+  });
 });
 
 mneme.controller('NewCtrl', function ($scope, $routeParams,
