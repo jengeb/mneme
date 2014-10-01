@@ -3,20 +3,20 @@
     <!-- filter panel -->
     <div ng-show="mnemedb.mnemes.length" class="panel panel-info">
       <!-- filter panel heading -->
-      <div ng-click="filter_show = !filter_show"
+      <div ng-click="filter.show = !filter.show"
           class="panel-heading mneme-pointer clearfix">
         <span class="glyphicon glyphicon-filter"></span> Filter
         <!-- arrow pointing down or up -->
-        <span ng-show="!filter_show" class="caret"></span>
-        <span ng-show="filter_show" class="dropup">
+        <span ng-show="!filter.show" class="caret"></span>
+        <span ng-show="filter.show" class="dropup">
           <span class="caret"></span>
         </span>
 
         <!-- list of selected filter tags (stop click event propagation to
              preven the panel from closing) -->
         <a href=""
-            ng-repeat="tag in filter_tags"
-            ng-click="filter_tags_remove(tag); $event.stopPropagation();"
+            ng-repeat="tag in filter.tags"
+            ng-click="filter.tags_remove(tag); $event.stopPropagation();"
             class="label label-primary mneme-tag mneme-hover-base">
           <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
           <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
@@ -25,8 +25,8 @@
 
         <!-- show map restriction label -->
         <a href=""
-            ng-click="filter_map = false; $event.stopPropagation();"
-            ng-show="filter_map"
+            ng-click="filter.map_show = false; $event.stopPropagation();"
+            ng-show="filter.map_show"
             class="label label-default mneme-tag mneme-hover-base">
           <span class="glyphicon glyphicon-globe mneme-hover-hide"></span>
           <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
@@ -35,26 +35,28 @@
 
         <!-- clear filter button -->
         <button
-            ng-click="filter_tags = []; filter_map = false; $event.stopPropagation();"
-            ng-show="filter_tags.length || filter_map"
+          ng-click="filter.tags = [];
+                    filter.map_show = false;
+                    $event.stopPropagation();"
+            ng-show="filter.tags.length || filter.map_show"
             class="btn btn-danger btn-xs pull-right mneme-filter-clear">
           <span class="glyphicon glyphicon-remove"></span> clear
         </button>
       </div>
       <!-- filter panel body -->
-      <div collapse="!filter_show">
+      <div collapse="!filter.show">
         <div class="panel-body">
-          <div ng-show="filter_tags_remaining.length">
+          <div ng-show="filter.tags_remaining.length">
             <label>
               <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
               Pick one or more of the following tags to filter your mnemes!
             </label>
             <div>
               <a href=""
-                  ng-repeat="tag in filter_tags_remaining |
-                             orderBy: '-count' |
-                             limitTo: filter_tags_remaining_limit"
-                  ng-click="filter_tags.push(tag.name)"
+                ng-repeat="tag in filter.tags_remaining
+                             | orderBy: '-count'
+                             | limitTo: filter.tags_remaining_limit"
+                  ng-click="filter.tags.push(tag.name)"
                   class="label label-info mneme-tag mneme-hover-base">
                 <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
                 <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
@@ -62,23 +64,23 @@
                 <span class="mneme-badge">{{tag.count}}</span>
               </a>
               <button
-                  ng-click="filter_tags_remaining_limit = 10000"
-                  ng-show="filter_tags_remaining_limit == 5 &&
-                           filter_tags_remaining.length > 5"
+                  ng-click="filter.tags_remaining_limit = 10000"
+                  ng-show="filter.tags_remaining_limit == 5 &&
+                           filter.tags_remaining.length > 5"
                   class="btn btn-primary btn-xs">
-                show all ({{filter_tags_remaining.length -
-                filter_tags_remaining_limit}} more)
+                show all ({{filter.tags_remaining.length -
+                filter.tags_remaining_limit}} more)
               </button>
               <button
-                  ng-click="filter_tags_remaining_limit = 5"
-                  ng-show="filter_tags_remaining_limit > 5 &&
-                           filter_tags_remaining.length > 5"
+                  ng-click="filter.tags_remaining_limit = 5"
+                  ng-show="filter.tags_remaining_limit > 5 &&
+                           filter.tags_remaining.length > 5"
                   class="btn btn-primary btn-xs">
                 show less
               </button>
             </div>
           </div>
-          <label ng-show="!filter_tags_remaining.length">
+          <label ng-show="!filter.tags_remaining.length">
             <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
             There are no more tags for refining the filter!
           </label>
@@ -87,20 +89,20 @@
           <div>
             <label>
               <button
-                  ng-model="filter_map"
+                  ng-model="filter.map_show"
                   btn-checkbox
                   type="button" class="btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
                 Restrict to area on map
               </button>
             </label>
-            <div collapse="!filter_map">
+            <div collapse="!filter.map_show">
               <leaflet
-                  center="location_center"
-                  markers="location_markers"
-                  paths="location_paths"
-                  event-broadcast="location_events"
-                  bounds="location_bounds"
+                  center="filter.map_center"
+                  markers="filter.map_markers"
+                  paths="filter.map_paths"
+                  event-broadcast="filter.map_events"
+                  bounds="filter.map_bounds"
                   class="mneme-leaflet-map"
                   >
               </leaflet>
@@ -138,12 +140,12 @@
           </th>
           <th>
             Creation date
-            <a href="" ng-click="order_field = 'ctime';
+            <a href ng-click="order_field = 'ctime';
                                  order_reverse = !order_reverse">
               <span class="glyphicon glyphicon-sort"></span>
             </a>
           </th>
-          <th ng-if="filter_map">Distance from map center</th>
+          <th ng-if="filter.map_show">Distance from map center</th>
           <th></th>
         </tr>
       </thead>
@@ -153,7 +155,7 @@
           <td>
             <h4>{{mneme.name}}</h4>
             <span ng-repeat="tag in mneme.tags">
-              <span ng-if="!filter_tags_contains(tag)"
+              <span ng-if="!filter.tags_contains(tag)"
                   class="mneme-tag label label-info">
                 <span class="glyphicon glyphicon-tag"></span>
                 {{tag}}
@@ -170,7 +172,7 @@
           <td>
             <span am-time-ago="mneme.ctime"></span>
           </td>
-          <td ng-if="filter_map">6 km</td>
+          <td ng-if="filter.map_show">6 km</td>
           <td class="text-right">
             <button
                 ng-click="edit(mneme)"

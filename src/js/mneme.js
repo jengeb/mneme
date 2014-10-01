@@ -86,75 +86,107 @@ function sanitize_tags (tags) {
   return _.clone(tags) || [];
 }
 
-// set up Overview controller
-mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
-    $location, mnemedb, leafletData) {
-
-  // store mnemedb on scope in order to allow deletions
-  $scope.mnemedb = mnemedb;
-
-  // get parameters from query part of URL via $routeParams
-  $scope.filter_tags = sanitize_tags($routeParams.t);
-
-  $scope.filter_tags_remaining = [];
-  $scope.filter_tags_remaining_limit = 5;
-  $scope.filter_tags_remove = function (tag) {
-    _.pull($scope.filter_tags, tag);
+// kick out all mnemes which do not contain the given tags
+mneme.filter('match_tags', function () {
+  return function (mnemes, tags) {
+    return _.filter(mnemes, function (mneme) {
+      return _.intersection(
+          mneme.tags, tags
+        ).length === tags.length;
+    });
   };
-  $scope.filter_tags_contains = function (tag) {
-    return _.contains($scope.filter_tags, tag);
-  };
+});
 
-  // update remaining filter tags on change of 'filter_tags' and 'mnemes'.
-  // Warning: do not simply use filter_tags_get_remaining(...) in the
-  // template! This causes angular to run into an infinite loop because of
-  // dirty checking...
-  var filter_tags_remaining_update = function () {
+mneme.filter('match_tags', function () {
+  return function (mnemes, tags) {
+    return _.filter(mnemes, function (mneme) {
+      return _.intersection(
+          mneme.tags, tags
+        ).length === tags.length;
+    });
+  };
+});
+
+// get remaining tags (complementary to selected tags)
+mneme.filter('mnemes_tags_remaining', function () {
+  return function (mnemes, filter_tags) {
     // get the tags of all mnemes
-    var tags_all = _.pluck($scope.mnemedb.mnemes, 'tags');
+    var tags_all = _.pluck(mnemes, 'tags');
 
     // kick out all tag arrays which do not contain all selected tags
     var tags_remaining = _.filter(tags_all, function (tags) {
       return _.intersection(
-          tags, $scope.filter_tags
-        ).length === $scope.filter_tags.length;
+          tags, filter_tags
+        ).length === filter_tags.length;
     });
 
     var tags_counts = get_tags_counts(tags_remaining);
 
     // kick out the already selected tags
-    tags = _.omit(tags_counts, $scope.filter_tags);
+    tags = _.omit(tags_counts, filter_tags);
 
     // reorganize tags as array of objects
-    tags = _.map(tags, function (val, key) {
+    return _.map(tags, function (val, key) {
       return {name: key, count: val};
     });
-
-    $scope.filter_tags_remaining = tags;
   };
-  $scope.$watchCollection('filter_tags', filter_tags_remaining_update);
+});
+
+// set up Overview controller
+mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
+    $location, $filter, mnemedb, leafletData) {
+
+  // store mnemedb on scope in order to allow deletions
+  $scope.mnemedb = mnemedb;
+
+  $scope.filter = {
+    // get parameters from query part of URL via $routeParams
+    tags: sanitize_tags($routeParams.t),
+    tags_remaining: [],
+    tags_remaining_limit: 5,
+    tags_remove: function (tag) {
+      _.pull($scope.filter.tags, tag);
+    },
+    tags_contains: function (tag) {
+      return _.contains($scope.filter.tags, tag);
+    },
+    // set map center
+    map_center: {
+      lat: 15,
+      lng: 17,
+      zoom: 1
+    },
+    map_markers: {}
+  };
+
+  // update $scope.filter.tags_remaining on change of 'filter.tags' and
+  // 'mnemedb.mnemes'.
+  // Warning: do not simply use filter_tags_get_remaining(...) in the
+  // template! This causes angular to run into an infinite loop because of
+  // dirty checking...
+  var filter_tags_remaining_update = function () {
+    $scope.filter.tags_remaining = $filter('mnemes_tags_remaining')(
+      $scope.mnemedb.mnemes, $scope.filter.tags
+    );
+  };
+  $scope.$watchCollection('filter.tags', filter_tags_remaining_update);
   $scope.$watchCollection('mnemedb.mnemes', filter_tags_remaining_update);
 
-  // invalidate size after show/hide
-  $scope.$watch('filter_map', function(show) {
+  // invalidate size and fit map when it becomes visible
+  $scope.$watch('filter.map_show', function(show) {
     if (show) {
       leafletData.getMap().then(function (map) {
         map.invalidateSize();
-        map.fitBounds(L.latLngBounds($scope.location_markers).pad(0.1));
+        if ($scope.filter.map_markers.length) {
+          map.fitBounds(L.latLngBounds($scope.filter.map_markers).pad(0.1));
+        }
       });
     }
   });
 
-  // set map center
-  $scope.location_center = {
-    lat: 15,
-    lng: 17,
-    zoom: 1
-  };
-
-  // set map markers to current selection
   $scope.$watchCollection('mnemes_filtered', function (mnemes) {
-    $scope.location_markers = _.compact(_.map(mnemes, function (mneme) {
+    // set map markers to current selection
+    $scope.filter.map_markers = _.compact(_.map(mnemes, function (mneme) {
       return mneme.location ? {
         lat: mneme.location.lat,
         lng: mneme.location.lng
@@ -165,22 +197,20 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // update 'mnemes_filtered' to match the tag filter
   var mnemes_filtered_update = function () {
     // kick out all mnemes which do not contain all selected tags
-    $scope.mnemes_filtered = _.filter($scope.mnemedb.mnemes, function (mneme) {
-      return _.intersection(
-          mneme.tags, $scope.filter_tags
-        ).length === $scope.filter_tags.length;
-    });
+    $scope.mnemes_filtered = $filter('match_tags')(
+      $scope.mnemedb.mnemes, $scope.filter.tags
+    );
   };
-  $scope.$watchCollection('filter_tags', mnemes_filtered_update);
+  $scope.$watchCollection('filter.tags', mnemes_filtered_update);
   $scope.$watchCollection('mnemedb.mnemes', mnemes_filtered_update);
 
   // update URL with filter parameters
   var update_url = function () {
     $location.search({
-      t: $scope.filter_tags
+      t: $scope.filter.tags
     });
   };
-  $scope.$watchCollection('filter_tags', update_url);
+  $scope.$watchCollection('filter.tags', update_url);
 
   // switch to new mneme page
   $scope.new = function () {
@@ -190,7 +220,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // switch to edit page
   $scope.edit = function (mneme) {
     $location.search({
-      t: $scope.filter_tags,
+      t: $scope.filter.tags,
       id: mneme._id
     });
     $location.path('/edit');
