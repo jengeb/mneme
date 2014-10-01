@@ -107,20 +107,31 @@ mneme.filter('match_tags', function () {
   };
 });
 
-// get remaining tags (complementary to selected tags)
-mneme.filter('mnemes_tags_remaining', function () {
-  return function (mnemes, filter_tags) {
-    // get the tags of all mnemes
-    var tags_all = _.pluck(mnemes, 'tags');
-
-    // kick out all tag arrays which do not contain all selected tags
-    var tags_remaining = _.filter(tags_all, function (tags) {
-      return _.intersection(
-          tags, filter_tags
-        ).length === filter_tags.length;
+mneme.filter('match_map', function () {
+  return function (mnemes, active, bounds) {
+    if (!active) {
+      return mnemes;
+    }
+    bounds = L.latLngBounds(bounds.southWest, bounds.northEast);
+    return _.filter(mnemes, function (mneme) {
+      return mneme.location && bounds.contains(
+        L.latLng(mneme.location.lat, mneme.location.lng)
+      );
     });
+  };
+});
 
-    var tags_counts = get_tags_counts(tags_remaining);
+// get remaining tags (complementary to selected tags)
+mneme.filter('mnemes_tags_remaining', function ($filter) {
+  return function (mnemes, filter_tags, filter_map, filter_map_bounds) {
+    // kick out all tag arrays which do not contain all selected tags
+    mnemes = $filter('match_tags')(mnemes, filter_tags);
+
+    // kick out all mnemes that do not match the map filter
+    mnemes = $filter('match_map')(mnemes, filter_map, filter_map_bounds);
+
+    // get tag counts
+    var tags_counts = get_tags_counts(_.pluck(mnemes, 'tags'));
 
     // kick out the already selected tags
     tags = _.omit(tags_counts, filter_tags);
@@ -166,10 +177,13 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   // dirty checking...
   var filter_tags_remaining_update = function () {
     $scope.filter.tags_remaining = $filter('mnemes_tags_remaining')(
-      $scope.mnemedb.mnemes, $scope.filter.tags
+      $scope.mnemedb.mnemes, $scope.filter.tags,
+      $scope.filter.map_show, $scope.filter.map_bounds
     );
   };
   $scope.$watchCollection('filter.tags', filter_tags_remaining_update);
+  $scope.$watchCollection('filter.map_show', filter_tags_remaining_update);
+  $scope.$watchCollection('filter.map_bounds', filter_tags_remaining_update);
   $scope.$watchCollection('mnemedb.mnemes', filter_tags_remaining_update);
 
   // invalidate size and fit map when it becomes visible
@@ -194,14 +208,20 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     }));
   });
 
-  // update 'mnemes_filtered' to match the tag filter
+  // update 'mnemes_filtered' to match the tag and map filter
   var mnemes_filtered_update = function () {
+    var mnemes = $scope.mnemedb.mnemes;
+
     // kick out all mnemes which do not contain all selected tags
-    $scope.mnemes_filtered = $filter('match_tags')(
-      $scope.mnemedb.mnemes, $scope.filter.tags
+    mnemes = $filter('match_tags')(mnemes, $scope.filter.tags);
+
+    $scope.mnemes_filtered = $filter('match_map')(
+      mnemes, $scope.filter.map_show, $scope.filter.map_bounds
     );
   };
   $scope.$watchCollection('filter.tags', mnemes_filtered_update);
+  $scope.$watchCollection('filter.map_show', mnemes_filtered_update);
+  $scope.$watchCollection('filter.map_bounds', mnemes_filtered_update);
   $scope.$watchCollection('mnemedb.mnemes', mnemes_filtered_update);
 
   // update URL with filter parameters
