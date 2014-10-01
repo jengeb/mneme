@@ -82,7 +82,11 @@ hr.small {
   display: none;
 }
 
-.ng-hide {
+/* nasty hack to allow the map to compute its height in hidden/collapsed
+ * state. source:
+ * http://css-tricks.com/places-its-tempting-to-use-display-none-but-dont/ */
+.collapse:not(.in), .ng-hide {
+  height: auto !important;
   display: block !important;
   position: absolute !important;
   top: -9999px !important;

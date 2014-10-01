@@ -44,7 +44,7 @@
         </button>
       </div>
       <!-- filter panel body -->
-      <div ng-show="filter.show">
+      <div collapse="!filter.show">
         <div class="panel-body">
           <div ng-show="filter.tags_remaining.length">
             <label>
@@ -119,7 +119,7 @@
                 {{filter.map_get_status.text}}
               </div>
             </div>
-            <div ng-show="filter.map_show">
+            <div collapse="!filter.map_show">
               <leaflet
                   center="filter.map_center"
                   markers="filter.map_markers"
