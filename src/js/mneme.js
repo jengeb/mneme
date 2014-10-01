@@ -198,6 +198,27 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     }
   });
 
+  // zoom to all tag matches
+  $scope.filter.map_zoom_tag_matches = function () {
+    // kick out all mnemes which do not contain all selected tags
+    var mnemes = $filter('match_tags')(
+      $scope.mnemedb.mnemes, $scope.filter.tags
+    );
+
+    var latlngs = _.compact(_.map(mnemes, function (mneme) {
+      return mneme.location ?
+        L.latLng(mneme.location.lat, mneme.location.lng) :
+        false;
+    }));
+    leafletData.getMap().then(function (map) {
+      if (latlngs.length) {
+        map.fitBounds(L.latLngBounds(latlngs).pad(0.1));
+      } else {
+        map.fitWorld();
+      }
+    });
+  };
+
   $scope.$watchCollection('mnemes_filtered', function (mnemes) {
     // set map markers to current selection
     $scope.filter.map_markers = _.compact(_.map(mnemes, function (mneme) {

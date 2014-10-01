@@ -87,7 +87,7 @@
           <hr class="small">
           <!-- TODO: map filter -->
           <div>
-            <label>
+            <div class="clearfix">
               <button
                   ng-model="filter.map_show"
                   btn-checkbox
@@ -95,7 +95,22 @@
                 <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
                 Restrict to area on map
               </button>
-            </label>
+              <span ng-show="filter.map_show" class="pull-right">
+                <button
+                    ng-click="filter.map_zoom_tag_matches()"
+                    class="btn btn-primary"
+                    >
+                  <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+                  Zoom to all tag matches
+                </button>
+                <button
+                    class="btn btn-primary"
+                    >
+                  <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
+                  Zoom to my position
+                </button>
+              </span>
+            </div>
             <div collapse="!filter.map_show">
               <leaflet
                   center="filter.map_center"
@@ -103,7 +118,7 @@
                   paths="filter.map_paths"
                   event-broadcast="filter.map_events"
                   bounds="filter.map_bounds"
-                  class="mneme-leaflet-map"
+                  class="mneme-leaflet-map mneme-margin-top"
                   >
               </leaflet>
             </div>
@@ -179,7 +194,7 @@
             <span am-time-ago="mneme.ctime"></span>
           </td>
           <td ng-show="filter.map_show">
-            {{mneme.distance/1000 | number:1}} km
+            {{mneme.distance/1000 | number:2}} km
           </td>
           <td class="text-right">
             <button
