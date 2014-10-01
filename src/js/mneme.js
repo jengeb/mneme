@@ -167,7 +167,14 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
       lng: 17,
       zoom: 1
     },
-    map_markers: {}
+    map_markers: {},
+    map_paths: [],
+    map_events: {
+      map: {
+        enable: ['locationfound', 'locationerror'],
+        logic: 'emit'
+      }
+    }
   };
 
   // update $scope.filter.tags_remaining on change of 'filter.tags' and
@@ -215,7 +222,54 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
         map.fitBounds(L.latLngBounds(latlngs).pad(0.1));
       } else {
         map.fitWorld();
+        // TODO: show a message to the user that no mnemes match the tags filter
       }
+    });
+  };
+
+  // location found
+  $scope.$on('leafletDirectiveMap.locationfound', function (event, args) {
+    $scope.filter.map_get_status = {
+      code: 'success',
+      text: 'Location found!'
+    };
+
+    // add accuracy circle
+    var latlng = args.leafletEvent.latlng;
+    var radius = args.leafletEvent.accuracy; // in meter
+    $scope.filter.map_paths = [{
+      type: 'circle',
+      radius: radius,
+      latlngs: {lat: latlng.lat, lng: latlng.lng},
+      clickable: false
+    }];
+
+    // determine bounding box
+    var deg = L.LatLng.RAD_TO_DEG * radius / 6371000;
+    leafletData.getMap().then(function (map) {
+      map.fitBounds([
+        [latlng.lat - deg, latlng.lng - deg],
+        [latlng.lat + deg, latlng.lng + deg]
+      ]);
+    });
+  });
+  $scope.$on('leafletDirectiveMap.locationerror', function (event) {
+    $scope.filter.map_get_status = {
+      code: 'fail',
+      text: 'Location could not be determined!'
+    };
+  });
+  $scope.filter.map_zoom_my_location = function () {
+    $scope.filter.map_get_status = {
+      code: 'active',
+      text: 'Obtaining location...'
+    };
+    leafletData.getMap().then(function (map) {
+      map.locate({
+        timeout: 20000,
+        maximumAge: 60000,
+        enableHighAccuracy: true
+      });
     });
   };
 
