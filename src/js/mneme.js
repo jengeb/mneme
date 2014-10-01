@@ -215,13 +215,29 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     // kick out all mnemes which do not contain all selected tags
     mnemes = $filter('match_tags')(mnemes, $scope.filter.tags);
 
-    $scope.mnemes_filtered = $filter('match_map')(
+    mnemes = $filter('match_map')(
       mnemes, $scope.filter.map_show, $scope.filter.map_bounds
     );
+
+    if ($scope.filter.map_show && $scope.filter.map_center) {
+      var center = L.latLng(
+        $scope.filter.map_center.lat, $scope.filter.map_center.lng
+      );
+      mnemes = _.map(mnemes, function (mneme) {
+        if (mneme.location) {
+          mneme = _.clone(mneme);
+          var latlng = L.latLng(mneme.location.lat, mneme.location.lng);
+          mneme.distance = center.distanceTo(latlng);
+        }
+        return mneme;
+      });
+    }
+    $scope.mnemes_filtered = mnemes;
   };
   $scope.$watchCollection('filter.tags', mnemes_filtered_update);
   $scope.$watchCollection('filter.map_show', mnemes_filtered_update);
   $scope.$watchCollection('filter.map_bounds', mnemes_filtered_update);
+  $scope.$watchCollection('filter.map_center', mnemes_filtered_update);
   $scope.$watchCollection('mnemedb.mnemes', mnemes_filtered_update);
 
   // update URL with filter parameters

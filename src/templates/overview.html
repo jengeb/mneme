@@ -141,11 +141,17 @@
           <th>
             Creation date
             <a href ng-click="order_field = 'ctime';
-                                 order_reverse = !order_reverse">
+                              order_reverse = !order_reverse">
               <span class="glyphicon glyphicon-sort"></span>
             </a>
           </th>
-          <th ng-if="filter.map_show">Distance from map center</th>
+          <th ng-show="filter.map_show">
+            Distance from map center
+            <a href ng-click="order_field = 'distance';
+                              order_reverse = !order_reverse">
+              <span class="glyphicon glyphicon-sort"></span>
+            </a>
+          </th>
           <th></th>
         </tr>
       </thead>
@@ -155,7 +161,7 @@
           <td>
             <h4>{{mneme.name}}</h4>
             <span ng-repeat="tag in mneme.tags">
-              <span ng-if="!filter.tags_contains(tag)"
+              <span ng-show="!filter.tags_contains(tag)"
                   class="mneme-tag label label-info">
                 <span class="glyphicon glyphicon-tag"></span>
                 {{tag}}
@@ -172,7 +178,9 @@
           <td>
             <span am-time-ago="mneme.ctime"></span>
           </td>
-          <td ng-if="filter.map_show">6 km</td>
+          <td ng-show="filter.map_show">
+            {{mneme.distance/1000 | number:1}} km
+          </td>
           <td class="text-right">
             <button
                 ng-click="edit(mneme)"
