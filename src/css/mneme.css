@@ -81,3 +81,10 @@ hr.small {
 .mneme-timepicker tr:nth-child(odd) {
   display: none;
 }
+
+.ng-hide {
+  display: block !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}

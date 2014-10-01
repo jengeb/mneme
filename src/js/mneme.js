@@ -97,19 +97,9 @@ mneme.filter('match_tags', function () {
   };
 });
 
-mneme.filter('match_tags', function () {
-  return function (mnemes, tags) {
-    return _.filter(mnemes, function (mneme) {
-      return _.intersection(
-          mneme.tags, tags
-        ).length === tags.length;
-    });
-  };
-});
-
 mneme.filter('match_map', function () {
   return function (mnemes, active, bounds) {
-    if (!active) {
+    if (!active || !bounds) {
       return mnemes;
     }
     bounds = L.latLngBounds(bounds.southWest, bounds.northEast);
@@ -176,6 +166,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
       }
     }
   };
+
 
   // update $scope.filter.tags_remaining on change of 'filter.tags' and
   // 'mnemedb.mnemes'.
@@ -317,11 +308,42 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
 
   // update URL with filter parameters
   var update_url = function () {
-    $location.search({
+    var params = {
       t: $scope.filter.tags
-    });
+    };
+    if ($scope.filter.map_show) {
+      _.extend(params, {
+        lat: $filter('number')($scope.filter.map_center.lat, 6),
+        lng: $filter('number')($scope.filter.map_center.lng, 6),
+        z: $scope.filter.map_center.zoom
+      });
+    }
+    $location.search(params);
   };
   $scope.$watchCollection('filter.tags', update_url);
+  $scope.$watchCollection('filter.map_show', update_url);
+  $scope.$watchCollection('filter.map_center', update_url);
+
+  // grab map parameters from url
+  if (_.has($routeParams, 'lat') &&
+      _.has($routeParams, 'lng') &&
+      _.has($routeParams, 'z')) {
+    $scope.filter.map_show = true;
+    $scope.filter.map_center = {
+      lat: parseFloat($routeParams.lat),
+      lng: parseFloat($routeParams.lng),
+      zoom: parseInt($routeParams.z, 10)
+    };
+  }
+
+  $scope.$watch('filter.show', function (show) {
+    if (show) {
+      leafletData.getMap().then(function (map) {
+        map.invalidateSize();
+        $scope.$broadcast('boundsChanged');
+      });
+    }
+  });
 
   // switch to new mneme page
   $scope.new = function () {
@@ -336,6 +358,7 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     });
     $location.path('/edit');
   };
+
 });
 
 mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) {
