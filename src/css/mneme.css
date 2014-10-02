@@ -82,13 +82,29 @@ hr.small {
   display: none;
 }
 
-/* nasty hack to allow the map to compute its height in hidden/collapsed
- * state. source:
- * http://css-tricks.com/places-its-tempting-to-use-display-none-but-dont/ */
-.collapse:not(.in), .ng-hide {
-  height: auto !important;
+/* nasty hacks to allow the map to compute its height in hidden/collapsed
+ * state. */
+.collapse:not(.in) {
+  display: block !important; 
+  overflow: hidden;
+}
+
+.ng-hide {
+  height: 0px;
+  overflow: hidden;
   display: block !important;
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* list of inline elements from
+ * https://developer.mozilla.org/de/docs/Web/HTML/Block-level_elemente */
+b.ng-hide, big.ng-hide, i.ng-hide, small.ng-hide, tt.ng-hide, abbr.ng-hide,
+acronym.ng-hide, cite.ng-hide, code.ng-hide, dfn.ng-hide, em.ng-hide,
+kbd.ng-hide, strong.ng-hide, samp.ng-hide, var.ng-hide, a.ng-hide, bdo.ng-hide,
+br.ng-hide, img.ng-hide, map.ng-hide, object.ng-hide, q.ng-hide,
+script.ng-hide, span.ng-hide, sub.ng-hide, sup.ng-hide, button.ng-hide,
+input.ng-hide, label.ng-hide, select.ng-hide, textarea.ng-hide {
+  display: none !important;
 }

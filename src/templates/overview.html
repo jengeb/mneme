@@ -85,50 +85,54 @@
             There are no more tags for refining the filter!
           </label>
           <hr class="small">
-          <!-- TODO: map filter -->
-          <div>
-            <div class="row">
-              <div class="col-md-3">
-                <button
-                    ng-model="filter.map_show"
-                    btn-checkbox
-                    type="button" class="btn btn-default">
-                  <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
-                  Restrict to area on map
-                </button>
-              </div>
-              <div ng-show="filter.map_show" class="col-md-6">
-                <button ng-click="filter.map_zoom_tag_matches()"
-                    class="btn btn-primary">
-                  <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
-                  Zoom to all tag matches
-                </button>
-                <button ng-click="filter.map_zoom_my_location()"
-                    ng-class="{disabled: filter.map_get_status.code == 'active'}"
-                    class="btn btn-primary">
-                  <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
-                  Zoom to my position
-                </button>
-              </div>
-              <div ng-show="filter.map_show" class="col-md-3 mneme-margin-top"
-                  ng-class="{
-                    'text-primary': filter.map_get_status.code == 'active',
-                    'text-success': filter.map_get_status.code == 'success',
-                    'text-danger': filter.map_get_status.code == 'fail'
-                  }">
-                {{filter.map_get_status.text}}
+          <!-- map filter -->
+          <div class="row">
+            <div class="col-md-3">
+              <button
+                  ng-model="filter.map_show"
+                  btn-checkbox
+                  type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+                Restrict to area on map
+              </button>
+              <div collapse="!filter.map_show">
+                <p>
+                  <button ng-click="filter.map_zoom_tag_matches()"
+                      class="btn btn-primary">
+                    <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+                    Zoom to all tag matches
+                  </button>
+                </p>
+                <p>
+                  <button ng-click="filter.map_zoom_my_location()"
+                      ng-class="{disabled: filter.map_get_status.code == 'active'}"
+                      class="btn btn-primary">
+                    <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
+                    Zoom to my position
+                  </button>
+                </p>
+                <p ng-show="filter.map_show"
+                    ng-class="{
+                      'text-primary': filter.map_get_status.code == 'active',
+                      'text-success': filter.map_get_status.code == 'success',
+                      'text-danger': filter.map_get_status.code == 'fail'
+                    }">
+                  {{filter.map_get_status.text}}
+                </p>
               </div>
             </div>
             <div collapse="!filter.map_show">
-              <leaflet
-                  center="filter.map_center"
-                  markers="filter.map_markers"
-                  paths="filter.map_paths"
-                  event-broadcast="filter.map_events"
-                  bounds="filter.map_bounds"
-                  class="mneme-leaflet-map mneme-margin-top"
-                  >
-              </leaflet>
+              <div class="col-md-9">
+                <leaflet
+                    center="filter.map_center"
+                    markers="filter.map_markers"
+                    paths="filter.map_paths"
+                    event-broadcast="filter.map_events"
+                    bounds="filter.map_bounds"
+                    class="mneme-leaflet-map mneme-margin-top"
+                    >
+                </leaflet>
+              </div>
             </div>
           </div>
         </div>
