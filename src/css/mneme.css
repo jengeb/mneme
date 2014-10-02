@@ -21,8 +21,12 @@ body {
   margin-top: 1em;
 }
 
-.mneme-margin-top{
+.mneme-margin-top {
   margin-top: 7px;
+}
+
+.mneme-margin-bottom {
+  margin-bottom: 7px;
 }
 
 .mneme-margin-left {
@@ -114,4 +118,9 @@ input.ng-hide, label.ng-hide, select.ng-hide, textarea.ng-hide,
 td.ng-hide, th.ng-hide
 {
   display: none !important;
+}
+
+/* fix z-index of bootstrap's dropdown menu (clashes with leaflet controls) */
+.dropdown-menu {
+  z-index: 1001;
 }
