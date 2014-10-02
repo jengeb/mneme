@@ -99,7 +99,8 @@
               <div collapse="!filter.map_show">
                 <div class="btn-group" dropdown is-open="filter.map_zoom">
                   <button type="button"
-                      class="btn btn-primary dropdown-toggle mneme-margin-bottom">
+                    class="btn btn-primary dropdown-toggle
+                           mneme-margin-bottom mneme-margin-top">
                     <span class="glyphicon glyphicon-zoom-in"></span>
                     Zoom to...
                     <span class="caret"></span>
@@ -112,10 +113,9 @@
                         all tag matches
                       </a>
                     </li>
-                    <li>
+                    <li ng-class="{disabled: filter.map_get_status.code == 'active'}">
                       <a href ng-click="filter.map_zoom_my_location();
                                         filter.map_zoom = false"
-                          ng-class="{disabled: filter.map_get_status.code == 'active'}"
                         >
                         <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
                         my position
