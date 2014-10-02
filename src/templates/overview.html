@@ -88,14 +88,26 @@
           <!-- map filter -->
           <div class="row">
             <div class="col-md-3">
-              <button
-                  ng-model="filter.map_show"
-                  btn-checkbox
-                  type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
-                Restrict to area on map
-              </button>
+              <div>
+                <!--button
+                    ng-model="filter.map_show"
+                    btn-checkbox
+                    type="button" class="btn btn-default">
+                  <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+                  Restrict to area on map
+                  </button-->
+                <div>
+                  <label for="map_show" class="control-label mneme-margin-right">
+                    <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+                    Restrict to area on map
+                  </label>
+                  <input type="checkbox" ng-model="filter.map_show"
+                      id="map_show" class="mneme-margin-left">
+                </div>
+
+              </div>
               <div collapse="!filter.map_show">
+                <!--
                 <p>
                   <button ng-click="filter.map_zoom_tag_matches()"
                       class="btn btn-primary">
@@ -111,25 +123,51 @@
                     Zoom to my position
                   </button>
                 </p>
-                <p ng-show="filter.map_show"
+                -->
+                <div class="btn-group" dropdown is-open="filter.map_zoom">
+                  <button type="button" class="btn btn-primary dropdown-toggle">
+                    <span class="glyphicon glyphicon-zoom-in"></span>
+                    Zoom to...
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li>
+                      <a href ng-click="filter.map_zoom_tag_matches();
+                                        filter.map_zoom = false">
+                        <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+                        all tag matches
+                      </a>
+                    </li>
+                    <li>
+                      <a href ng-click="filter.map_zoom_my_location();
+                                        filter.map_zoom = false"
+                          ng-class="{disabled: filter.map_get_status.code == 'active'}"
+                        >
+                        <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
+                        my position
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="alert mneme-margin-top"
                     ng-class="{
-                      'text-primary': filter.map_get_status.code == 'active',
-                      'text-success': filter.map_get_status.code == 'success',
-                      'text-danger': filter.map_get_status.code == 'fail'
-                    }">
+                      'alert-info': filter.map_get_status.code == 'active',
+                      'alert-success': filter.map_get_status.code == 'success',
+                      'alert-danger': filter.map_get_status.code == 'fail'
+                    }" role="alert">
                   {{filter.map_get_status.text}}
-                </p>
+                </div>
               </div>
             </div>
-            <div collapse="!filter.map_show">
-              <div class="col-md-9">
+            <div class="col-md-9">
+              <div collapse="!filter.map_show">
                 <leaflet
                     center="filter.map_center"
                     markers="filter.map_markers"
                     paths="filter.map_paths"
                     event-broadcast="filter.map_events"
                     bounds="filter.map_bounds"
-                    class="mneme-leaflet-map mneme-margin-top"
+                    class="mneme-leaflet-map"
                     >
                 </leaflet>
               </div>

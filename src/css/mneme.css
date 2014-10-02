@@ -29,6 +29,10 @@ body {
   margin-left: 7px;
 }
 
+.mneme-margin-right {
+  margin-right: 7px;
+}
+
 /* show link-style cursor (like a href) */
 .mneme-pointer {
   cursor: pointer;
@@ -105,6 +109,9 @@ acronym.ng-hide, cite.ng-hide, code.ng-hide, dfn.ng-hide, em.ng-hide,
 kbd.ng-hide, strong.ng-hide, samp.ng-hide, var.ng-hide, a.ng-hide, bdo.ng-hide,
 br.ng-hide, img.ng-hide, map.ng-hide, object.ng-hide, q.ng-hide,
 script.ng-hide, span.ng-hide, sub.ng-hide, sup.ng-hide, button.ng-hide,
-input.ng-hide, label.ng-hide, select.ng-hide, textarea.ng-hide {
+input.ng-hide, label.ng-hide, select.ng-hide, textarea.ng-hide,
+/* additional block elements that should use display:none */
+td.ng-hide, th.ng-hide
+{
   display: none !important;
 }
