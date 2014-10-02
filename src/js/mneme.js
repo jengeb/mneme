@@ -354,6 +354,9 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
   $scope.edit = function (mneme) {
     $location.search({
       t: $scope.filter.tags,
+      lat: $routeParams.lat,
+      lng: $routeParams.lng,
+      z: $routeParams.z,
       id: mneme._id
     });
     $location.path('/edit');
@@ -361,7 +364,8 @@ mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
 
 });
 
-mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) {
+mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout,
+      $routeParams) {
   $scope.mneme = $scope.$parent.mneme;
   $scope.mnemedb = mnemedb;
 
@@ -428,16 +432,17 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
     }
   };*/
 
-  var location = $scope.mneme.location;
-  $scope.location_show = location !== undefined;
 
-  if (location) {
+  if ($scope.mneme.location) {
+    $scope.location_show = true;
+
+    var location = $scope.mneme.location;
     // set center
     $scope.location_center = {
       lat: location.lat,
       lng: location.lng,
       zoom: $scope.location_center && $scope.location_markers.mneme ?
-          $scope.location_center.zoom : 13
+          $scope.location_center.zoom : 14
     };
 
     // set marker
@@ -459,6 +464,23 @@ mneme.controller('MnemeCtrl', function ($scope, mnemedb, leafletData, $timeout) 
       lng: 17,
       draggable: true
     };
+
+    // grab map parameters from url
+    if (_.has($routeParams, 'lat') &&
+        _.has($routeParams, 'lng') &&
+        _.has($routeParams, 'z')) {
+      $scope.location_show = true;
+      $scope.location_center = {
+        lat: parseFloat($routeParams.lat),
+        lng: parseFloat($routeParams.lng),
+        zoom: parseInt($routeParams.z, 10)
+      };
+      $scope.location_markers.mneme = {
+        lat: parseFloat($routeParams.lat),
+        lng: parseFloat($routeParams.lng),
+        draggable: true
+      };
+    }
   }
 
   // update center and update mneme property
@@ -591,7 +613,10 @@ mneme.controller('NewCtrl', function ($scope, $routeParams,
   };
   $scope.overview = function () {
     $location.search({
-      t: $routeParams.t
+      t: $routeParams.t,
+      lat: $routeParams.lat,
+      lng: $routeParams.lng,
+      z: $routeParams.z
     });
     $location.path('/overview');
   };
@@ -627,7 +652,10 @@ mneme.controller('EditCtrl', function ($scope, $routeParams,
 
   $scope.overview = function () {
     $location.search({
-      t: $routeParams.t
+      t: $routeParams.t,
+      lat: $routeParams.lat,
+      lng: $routeParams.lng,
+      z: $routeParams.z
     });
     $location.path('/overview');
   };
