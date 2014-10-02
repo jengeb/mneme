@@ -89,41 +89,14 @@
           <div class="row">
             <div class="col-md-3">
               <div>
-                <!--button
-                    ng-model="filter.map_show"
-                    btn-checkbox
-                    type="button" class="btn btn-default">
+                <label for="map_show" class="control-label mneme-margin-right">
                   <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
                   Restrict to area on map
-                  </button-->
-                <div>
-                  <label for="map_show" class="control-label mneme-margin-right">
-                    <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
-                    Restrict to area on map
-                  </label>
-                  <input type="checkbox" ng-model="filter.map_show"
-                      id="map_show" class="mneme-margin-left">
-                </div>
-
+                </label>
+                <input type="checkbox" ng-model="filter.map_show"
+                    id="map_show" class="mneme-margin-left">
               </div>
               <div collapse="!filter.map_show">
-                <!--
-                <p>
-                  <button ng-click="filter.map_zoom_tag_matches()"
-                      class="btn btn-primary">
-                    <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
-                    Zoom to all tag matches
-                  </button>
-                </p>
-                <p>
-                  <button ng-click="filter.map_zoom_my_location()"
-                      ng-class="{disabled: filter.map_get_status.code == 'active'}"
-                      class="btn btn-primary">
-                    <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
-                    Zoom to my position
-                  </button>
-                </p>
-                -->
                 <div class="btn-group" dropdown is-open="filter.map_zoom">
                   <button type="button" class="btn btn-primary dropdown-toggle">
                     <span class="glyphicon glyphicon-zoom-in"></span>
@@ -150,6 +123,7 @@
                   </ul>
                 </div>
                 <div class="alert mneme-margin-top"
+                    ng-show="filter.map_get_status"
                     ng-class="{
                       'alert-info': filter.map_get_status.code == 'active',
                       'alert-success': filter.map_get_status.code == 'success',
