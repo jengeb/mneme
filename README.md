@@ -10,6 +10,10 @@ In order to organize your mnemes efficiently you can (and should) add
 * a **deadline** such as *2014/10/05 14:00*
 * a **location** on a map
 
+# Live demo
+
+Check it out on the [demo site](http://mneme.d00d3.net)!
+
 
 # License
 
