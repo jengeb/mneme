@@ -133,6 +133,10 @@ mneme.filter('mnemes_tags_remaining', function ($filter) {
   };
 });
 
+// set up Navbar controller
+mneme.controller('NavbarCtrl', function () {
+});
+
 // set up Overview controller
 mneme.controller('OverviewCtrl', function ($scope, $timeout, $routeParams,
     $location, $filter, mnemedb, leafletData) {

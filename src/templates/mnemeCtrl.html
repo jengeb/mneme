@@ -3,7 +3,7 @@
   <div class="form-group">
     <label for="name" class="control-label col-md-2">
       Name
-      <span class="glyphicon glyphicon-pencil mneme-margin-left"></span>
+      <span class="fa fa-pencil mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <input ng-model="mneme.name" type="text" class="form-control"
@@ -15,15 +15,15 @@
   <div class="form-group">
     <label for="tags" class="control-label col-md-2">
       Tags
-      <span class="glyphicon glyphicon-tags mneme-margin-left"></span>
+      <span class="fa fa-tags mneme-margin-left"></span>
     </label>
     <div class="col-md-5 mneme-margin-top">
       <!-- list of selected tags -->
       <p>
         <a href ng-repeat="tag in mneme.tags" ng-click="tags_remove(tag)"
             class="label label-primary mneme-tag mneme-hover-base">
-          <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-          <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+          <span class="fa fa-tag fa-lg mneme-hover-hide"></span>
+          <span class="fa fa-minus-circle fa-lg mneme-hover-show"></span>
           {{tag}}
         </a>
         <span ng-show="!mneme.tags.length">
@@ -43,7 +43,7 @@
               ng-click="tags_add()"
               ng-class="{disabled: !tag_new_validate()}"
               class="btn btn-primary" type="button">
-            <span class="glyphicon glyphicon-tag"></span>
+            <span class="fa fa-tag mneme-margin-right"></span>
             Add tag
           </button>
         </span>
@@ -58,8 +58,8 @@
                          | limitTo: tags_used_limit"
               ng-click="mneme.tags.push(tag.name)"
               class="label label-info mneme-tag mneme-hover-base">
-            <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-            <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
+            <span class="fa fa-tag fa-lg mneme-hover-hide"></span>
+            <span class="fa fa-plus-circle fa-lg mneme-hover-show"></span>
             {{tag.name}}
             <span class="mneme-badge">{{tag.count}}</span>
           </a>
@@ -87,7 +87,7 @@
   <div class="form-group">
     <label for="deadline" class="control-label col-md-2">
       Deadline
-      <span class="glyphicon glyphicon-time mneme-margin-left"></span>
+      <span class="fa fa-clock-o mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <div class="row">
@@ -109,7 +109,7 @@
                   ng-click="deadline_popup = !deadline_popup;
                             $event.stopPropagation();"
                   class="btn btn-primary">
-                <span class="glyphicon glyphicon-calendar"></span>
+                <span class="fa fa-calendar"></span>
               </button>
             </span>
           </div>
@@ -127,7 +127,7 @@
   <div class="form-group">
     <label for="location" class="control-label col-md-2">
       Location
-      <span class="glyphicon glyphicon-map-marker mneme-margin-left"></span>
+      <span class="fa fa-map-marker mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <div class="row">
@@ -139,7 +139,7 @@
             <button ng-click="location_get()"
                 type="button" class="btn btn-primary"
                 ng-class="{disabled: location_get_status.code == 'active'}">
-              <span class="glyphicon glyphicon-map-marker"></span>
+              <span class="fa fa-map-marker mneme-margin-right"></span>
               Get my location
             </button>
             <span class="mneme-margin-left"

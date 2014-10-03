@@ -5,7 +5,7 @@
       <!-- filter panel heading -->
       <div ng-click="filter.show = !filter.show"
           class="panel-heading mneme-pointer clearfix">
-        <span class="glyphicon glyphicon-filter"></span> Filter
+        <span class="fa fa-filter fa-lg"></span> Filter
         <!-- arrow pointing down or up -->
         <span ng-show="!filter.show" class="caret"></span>
         <span ng-show="filter.show" class="dropup">
@@ -18,8 +18,8 @@
             ng-repeat="tag in filter.tags"
             ng-click="filter.tags_remove(tag); $event.stopPropagation();"
             class="label label-primary mneme-tag mneme-hover-base">
-          <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-          <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+          <span class="fa fa-tag fa-lg mneme-hover-hide"></span>
+          <span class="fa fa-minus-circle fa-lg mneme-hover-show"></span>
           {{tag}}
         </a>
 
@@ -28,8 +28,8 @@
             ng-click="filter.map_show = false; $event.stopPropagation();"
             ng-show="filter.map_show"
             class="label label-default mneme-tag mneme-hover-base">
-          <span class="glyphicon glyphicon-globe mneme-hover-hide"></span>
-          <span class="glyphicon glyphicon-minus-sign mneme-hover-show"></span>
+          <span class="fa fa-globe mneme-hover-hide fa-lg"></span>
+          <span class="fa fa-minus-circle fa-lg mneme-hover-show"></span>
           map area
         </a>
 
@@ -40,7 +40,7 @@
                     $event.stopPropagation();"
             ng-show="filter.tags.length || filter.map_show"
             class="btn btn-danger btn-xs pull-right mneme-filter-clear">
-          <span class="glyphicon glyphicon-remove"></span> clear
+          <span class="fa fa-remove"></span> clear
         </button>
       </div>
       <!-- filter panel body -->
@@ -48,7 +48,7 @@
         <div class="panel-body">
           <div ng-show="filter.tags_remaining.length">
             <label>
-              <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+              <span class="fa fa-tags mneme-filter-icon"></span>
               Pick one or more of the following tags to filter your mnemes!
             </label>
             <div>
@@ -58,8 +58,8 @@
                              | limitTo: filter.tags_remaining_limit"
                   ng-click="filter.tags.push(tag.name)"
                   class="label label-info mneme-tag mneme-hover-base">
-                <span class="glyphicon glyphicon-tag mneme-hover-hide"></span>
-                <span class="glyphicon glyphicon-plus-sign mneme-hover-show"></span>
+                <span class="fa fa-tag fa-lg mneme-hover-hide"></span>
+                <span class="fa fa-plus-circle fa-lg mneme-hover-show"></span>
                 {{tag.name}}
                 <span class="mneme-badge">{{tag.count}}</span>
               </a>
@@ -81,7 +81,7 @@
             </div>
           </div>
           <label ng-show="!filter.tags_remaining.length">
-            <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+            <span class="fa fa-tags mneme-filter-icon"></span>
             There are no more tags for refining the filter!
           </label>
           <hr class="small">
@@ -90,7 +90,7 @@
             <div class="col-md-3">
               <div>
                 <label for="map_show" class="control-label mneme-margin-right">
-                  <span class="glyphicon glyphicon-globe mneme-filter-icon"></span>
+                  <span class="fa fa-globe mneme-filter-icon"></span>
                   Restrict to area on map
                 </label>
                 <input type="checkbox" ng-model="filter.map_show"
@@ -101,7 +101,7 @@
                   <button type="button"
                     class="btn btn-primary dropdown-toggle
                            mneme-margin-bottom mneme-margin-top">
-                    <span class="glyphicon glyphicon-zoom-in"></span>
+                    <span class="fa fa-search"></span>
                     Zoom to...
                     <span class="caret"></span>
                   </button>
@@ -109,7 +109,7 @@
                     <li>
                       <a href ng-click="filter.map_zoom_tag_matches();
                                         filter.map_zoom = false">
-                        <span class="glyphicon glyphicon-tags mneme-filter-icon"></span>
+                        <span class="fa fa-tags mneme-filter-icon"></span>
                         all tag matches
                       </a>
                     </li>
@@ -117,7 +117,7 @@
                       <a href ng-click="filter.map_zoom_my_location();
                                         filter.map_zoom = false"
                         >
-                        <span class="glyphicon glyphicon-map-marker mneme-filter-icon"></span>
+                        <span class="fa fa-map-marker mneme-filter-icon"></span>
                         my position
                       </a>
                     </li>
@@ -154,7 +154,7 @@
 
     <p ng-show="mnemedb.mnemes.length">
       <a href ng-click="new()" class="btn btn-primary">
-        <span class="glyphicon glyphicon-plus"></span>
+        <span class="fa fa-plus"></span>
         Add new mneme!
       </a>
     </p>
@@ -168,28 +168,28 @@
             Name
             <a href="" ng-click="order_field = 'name';
                                  order_reverse = !order_reverse">
-              <span class="glyphicon glyphicon-sort"></span>
+              <span class="fa fa-sort"></span>
             </a>
           </th>
           <th>
             Deadline
             <a href="" ng-click="order_field = 'deadline';
                                  order_reverse = !order_reverse">
-              <span class="glyphicon glyphicon-sort"></span>
+              <span class="fa fa-sort"></span>
             </a>
           </th>
           <th>
             Creation date
             <a href ng-click="order_field = 'ctime';
                               order_reverse = !order_reverse">
-              <span class="glyphicon glyphicon-sort"></span>
+              <span class="fa fa-sort"></span>
             </a>
           </th>
           <th ng-show="filter.map_show">
             Distance from map center
             <a href ng-click="order_field = 'distance';
                               order_reverse = !order_reverse">
-              <span class="glyphicon glyphicon-sort"></span>
+              <span class="fa fa-sort"></span>
             </a>
           </th>
           <th></th>
@@ -203,13 +203,13 @@
             <span ng-repeat="tag in mneme.tags">
               <span ng-show="!filter.tags_contains(tag)"
                   class="mneme-tag label label-info">
-                <span class="glyphicon glyphicon-tag"></span>
+                <span class="fa fa-tag fa-lg"></span>
                 {{tag}}
               </span>
             </span>
             <span ng-show="mneme.location"
                 class="mneme-tag label label-default">
-              <span class="glyphicon glyphicon-map-marker mneme-hover-hide"></span>
+              <span class="fa fa-map-marker fa-lg mneme-hover-hide"></span>
             </span>
           </td>
           <td>
@@ -225,12 +225,12 @@
             <button
                 ng-click="edit(mneme)"
                 type="button" class="btn btn-primary mneme-btn">
-              <span class="glyphicon glyphicon-edit"></span> edit
+              <span class="fa fa-edit"></span> edit
             </button>
             <button
                 ng-click="mnemedb.db.remove(mneme._id, mneme._rev)"
                 type="button" class="btn btn-danger mneme-btn">
-              <span class="glyphicon glyphicon-remove"></span> remove
+              <span class="fa fa-remove"></span> remove
             </button>
           </td>
         </tr>
@@ -251,7 +251,7 @@
     <!-- show add button if list is long -->
     <p ng-show="mnemes_filtered.length >= 7">
       <a href ng-click="new()" class="btn btn-primary">
-        <span class="glyphicon glyphicon-plus"></span>
+        <span class="fa fa-plus"></span>
         Add new mneme!
       </a>
     </p>
