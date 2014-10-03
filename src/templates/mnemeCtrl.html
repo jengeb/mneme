@@ -3,7 +3,7 @@
   <div class="form-group">
     <label for="name" class="control-label col-md-2">
       Name
-      <span class="fa fa-pencil mneme-margin-left"></span>
+      <span class="fa fa-pencil fa-fw mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <input ng-model="mneme.name" type="text" class="form-control"
@@ -15,7 +15,7 @@
   <div class="form-group">
     <label for="tags" class="control-label col-md-2">
       Tags
-      <span class="fa fa-tags mneme-margin-left"></span>
+      <span class="fa fa-tags fa-fw mneme-margin-left"></span>
     </label>
     <div class="col-md-5 mneme-margin-top">
       <!-- list of selected tags -->
@@ -87,7 +87,7 @@
   <div class="form-group">
     <label for="deadline" class="control-label col-md-2">
       Deadline
-      <span class="fa fa-clock-o mneme-margin-left"></span>
+      <span class="fa fa-clock-o fa-fw mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <div class="row">
@@ -96,28 +96,32 @@
               ng-change="deadline_toggle(deadline_show)" id="deadline">
         </div>
         <!-- date -->
-        <div ng-show="deadline_show" class="col-xs-5">
-          <div class="input-group">
-            <input type="text" class="form-control"
-                datepicker-popup="yyyy/MM/dd"
-                datepicker-options="deadline_date_options"
-                ng-model="mneme.deadline"
-                is-open="deadline_popup"
-                close-text="Close" />
-            <span class="input-group-btn">
-              <button type="button"
-                  ng-click="deadline_popup = !deadline_popup;
-                            $event.stopPropagation();"
-                  class="btn btn-primary">
-                <span class="fa fa-calendar"></span>
-              </button>
-            </span>
+        <div class="col-xs-5">
+          <div collapse="!deadline_show">
+            <div class="input-group">
+              <input type="text" class="form-control"
+                  datepicker-popup="yyyy/MM/dd"
+                  datepicker-options="deadline_date_options"
+                  ng-model="mneme.deadline"
+                  is-open="deadline_popup"
+                  close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button"
+                    ng-click="deadline_popup = !deadline_popup;
+                              $event.stopPropagation();"
+                    class="btn btn-primary">
+                  <span class="fa fa-calendar"></span>
+                </button>
+              </span>
+            </div>
           </div>
         </div>
         <!-- time -->
-        <div ng-show="deadline_show" class="col-xs-5 mneme-timepicker">
-          <timepicker ng-model="mneme.deadline" minute-step="15"
-              show-meridian="false"></timepicker>
+        <div class="col-xs-5">
+          <div collapse="!deadline_show">
+            <timepicker class="mneme-timepicker" ng-model="mneme.deadline"
+                minute-step="15" show-meridian="false"></timepicker>
+          </div>
         </div>
       </div>
     </div>
@@ -127,7 +131,7 @@
   <div class="form-group">
     <label for="location" class="control-label col-md-2">
       Location
-      <span class="fa fa-map-marker mneme-margin-left"></span>
+      <span class="fa fa-map-marker fa-fw mneme-margin-left"></span>
     </label>
     <div class="col-md-5">
       <div class="row">
