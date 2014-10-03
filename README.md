@@ -2,13 +2,13 @@
 
 A *mneme* is one thing you want to remember and has
  
-* a name such as *buy milk*
+* a **name** such as *buy milk*
 
-In order to organize your mnemes you can (and should) add
+In order to organize your mnemes efficiently you can (and should) add
 
-* tags such as *shopping list* and *supermarket*
-* a deadline such as *2014/10/05 14:00*
-* a location on a map
+* **tags** such as *shopping list* and *supermarket*
+* a **deadline** such as *2014/10/05 14:00*
+* a **location** on a map
 
 
 # License
